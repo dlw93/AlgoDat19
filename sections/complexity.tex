@@ -1,0 +1,147 @@
+\section{Komplexit\"atsanalyse}
+
+\begin{frame}{Hintergrund}
+\begin{block}{Knappheit von Ressourcen}
+    \begin{itemize}
+        \item Speicherplatz (Register, RAM, HDD/SSD, Tape, ...)
+        \item \alert{Rechenleistung} (Taktzyklen)
+    \end{itemize}
+\end{block}
+
+\begin{block}{Eine Problemstellung -- viele Lösungsansätze}
+    \begin{itemize}
+        \item Welchen Ansatz sollen wir nutzen?
+        \item Ziel: Klassifiziere Lösungsansätze nach ihrer \alert{Eignung}
+        \begin{itemize}
+            \item Eignung $\approx$ Ressourcenbedarf
+        \end{itemize}
+    \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Berechnungsmodell}
+Wir analysieren \alert{abstrakte Algorithmen} -- folglich st\"utzen wir unsere Analysen auf \alert{abstrakte Maschinen}.
+
+Beispielsweise ist die \alert{Random Access Machine (RAM)} ein zur \alert{Turingmaschine} \"aquivalentes und f\"ur unsere Zwecke leichter zu handhabendes Modell.
+\end{frame}
+
+\begin{frame}<1>[label=first_example]{Ein einfaches Beispiel}
+Gegeben sei eine Liste natürlicher Zahlen $a_1, \dots, a_n \in \nat$.
+
+Bestimme $k = a_i \cdot a_j$ mit $1 \leq i < j \leq n$, sodass $k$ \alert{maximiert} wird.
+
+\begin{quote}
+    In Worten: Finde das \alert{gr\"o{\ss}te} Produkt, das sich aus zwei \alert{verschiedenen} Elementen der Liste bilden lässt.
+\end{quote}
+
+\begin{block}{M\"ogliche Ans\"atze}
+    \begin{enumerate}
+        \item<1-> Betrachte alle möglichen Paare und berechne deren Produkt
+        \pause
+        \item<3-> Suche die beiden kleinsten Elemente $a_i, a_j$ und gib $a_i \cdot a_j$ aus
+    \end{enumerate}
+\end{block}
+\end{frame}
+
+\begin{frame}{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Maximales Produkt}
+        	\label{alg:max_prod}
+        	\DontPrintSemicolon
+        	\Input{$a_1, \dots, a_n \in \nat$}
+            \Output{$\max \{ a_i \cdot a_j : 1 \leq i < j \leq n \}$}
+        	$k \gets 0$\;
+        	\For{$i \gets 1$ \KwTo $n$}{
+        	    \For{$j \gets i + 1$ \KwTo $n$}{
+        	        \If{$a_i \cdot a_j > k$}{
+        	            $k \gets a_i \cdot a_j$\;
+        	        }
+                }
+            }
+            \Return{$k$}
+        \end{algorithm}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+        Die \"au{\ss}ere \textbf{for}-Schleife wird $n$-mal durchlaufen, die innere \textbf{for}-Schleife $n-1, n-2, \dots, 0$-mal
+        \begin{itemize}
+            \item Anwendung der \alert{gaußschen Summenformel} liefert $\frac{n \, (n-1)}{2}$
+        \end{itemize}
+        
+        Der Aufwand des \textbf{if}-Statements ist von $n$ (bzw. $i, j$) \alert{unabh\"angig}
+        \begin{itemize}
+            \item Multiplikationen, Vergleiche und Zuweisungen ben\"otigen lediglich \alert{konstant} viel Zeit
+        \end{itemize}
+        
+        Insgesamt $4 \cdot \frac{n \, (n-1)}{2} + 2$ Instruktionen
+    \end{column}
+\end{columns}
+\end{frame}
+
+\againframe<2->{first_example}
+
+\begin{frame}{$\bigO$-Notation}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.47\textwidth}
+    \begin{definition}[$\bigO$-Notation]
+    Seien $\teal{f}, \red{g}: \nat \to \nat$ Funktionen.
+    Wir schreiben $\teal{f} \in \bigO(\red{g})$ genau dann, wenn es eine Konstante $\orange{c} \in \nat$ gibt, sodass ab einem Index $n_0$ f\"ur alle $n \geq n_0$ gilt, dass $\teal{f}(n) \leq \orange{c} \cdot \red{g}(n)$.
+    \end{definition}
+    
+    \medskip
+    
+    {\footnotesize Das hei{\ss}t, ab einem gewissen Punkt $n_0$ gibt es keinen \alert{wesentlichen} Unterschied mehr zwischen den Funktionswerten von $\teal{f}$ und $\red{g}$.}
+\end{column}
+\begin{column}{0.47\textwidth}
+    \begin{tikzpicture}
+        \begin{axis}[tikzDefaults, xmin=-4, xmax=12, ymin=0, ymax=500]
+            \foreach \k in {1, ..., 8}{
+                \addplot+[domain=-4:12, draw=mandarin!40, line width=0.5pt, forget plot]{1/2 * \k * x^2};
+            }
+            \addplot+[domain=-4:12, draw=teal]{2*x^2 - 7*x + 18};
+            \addlegendentry{$2 \, x^2 - 7 \, x + 18$}
+            \addplot+[domain=-4:12, draw=madderlake]{x^2};
+            \addlegendentry{$x^2$}
+        \end{axis}
+    \end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Beispiel}
+\begin{beispiel}
+Sei $f(n) \coloneqq 3 \, n + 5$ und $g(n) \coloneqq 2 \, n$.
+
+Um zu zeigen, dass $f \in \bigO(g)$ ist, w\"ahlen wir {\color{madderlake} $c=2$} und erhalten 
+\begin{equation*}
+    \underbrace{3 \, n + 5}_{f(n)} \leq {\color{madderlake} 2} \cdot \underbrace{2 \, n}_{g(n)} = 3 \, n + n.
+\end{equation*}
+F\"ur $n \geq 5$ ist also $f(n) \leq {\color{madderlake} 2} \cdot g(n)$ und somit $n_0 = 5$.
+\end{beispiel}
+\end{frame}
+
+\begin{frame}{Eine leichte Aufgabe}
+\begin{task}<1->
+Sei $f(n) \coloneqq 6 \, n + 7$ und $g(n) \coloneqq n$.
+
+Zeigen Sie, dass $f \in \bigO(g)$ ist, d.h. finden Sie $c, n_0 \in \nat$, sodass f\"ur alle $n \geq n_0$ gilt, dass $f(n) \leq c \cdot g(n)$.
+\end{task}
+
+\begin{solution}<2->
+F\"ur $c = 7$ ist $6 \, n + 7 \leq 7 \, n = 6 \, n + n$ f\"ur alle $n \geq n_0 \coloneqq 7$.
+\end{solution}
+\end{frame}
+
+\begin{frame}{Mehr Aufgaben}
+\begin{task}<1->
+Zeigen Sie jeweils, dass $f \in \bigO(g)$ ist:
+\begin{enumerate}
+    \item $f(n) \coloneqq 12 \, n - 4$ und $g(n) \coloneqq n$
+    \item $f(n) \coloneqq 7 \, n + 1$ und $g(n) \coloneqq n^2$
+    \item $f(n) \coloneqq \log(n^2)$ und $g(n) \coloneqq \log(n)$
+\end{enumerate}
+F\"ur welche der Aufgaben gilt auch $g \in \bigO(f)$?
+\end{task}
+\end{frame}

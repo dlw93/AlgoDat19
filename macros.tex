@@ -1,0 +1,32 @@
+% general math
+\newcommand{\nat}{\mathbb{N}}
+\newcommand{\natpos}{\mathbb{N}_{\geq 1}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\powerset}{\mathcal{P}}
+\newcommand{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\cupdot}{\mathbin{\mathaccent\cdot\cup}}
+\DeclareMathOperator{\subsetfin}{\mathbin{\subset_{\mathsf{e}}}}
+\newcommand{\defiff}{\mathrel{\vcentcolon\Leftrightarrow}}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+% query functions
+\DeclareMathOperator{\adom}{adom}
+\DeclareMathOperator{\vars}{var}
+\DeclareMathOperator{\cons}{adom}
+\DeclareMathOperator{\free}{frei}
+\newcommand{\qfn}[1]{[\![#1]\!]}
+
+% algorithms
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\ResetInOut{output}
+\SetKw{True}{true}
+\SetKw{False}{false}
+
+% theorem environments
+\theoremstyle{definition}
+\newtheorem{beispiel}{Beispiel}
+\newtheorem{task}{Aufgabe}
+
+\theoremstyle{remark}
+\newtheorem*{bemerkung}{Bemerkung}

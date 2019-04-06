@@ -1,0 +1,92 @@
+\documentclass[aspectratio=169, t, envcountsect]{beamer}
+\usetheme[sectionpage=simple]{metropolis}
+\usepackage[ngerman]{babel}
+\usepackage{amssymb, mathtools, pgfplots}
+\usepackage[ruled, linesnumbered, vlined, ngerman]{algorithm2e}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+
+\title[Algorithmen und Datenstrukturen]{Tutorium\\Algorithmen und Datenstrukturen}
+\subtitle{Sommersemester 2019}
+\author{David Luis Wiegandt}
+\institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
+\date{}
+
+\definecolor{hublue}{RGB}{0, 55, 108}
+\definecolor{lighthublue}{RGB}{9, 80, 159}
+\definecolor{tealblue}{RGB}{56, 134, 151}
+\definecolor{madderlake}{RGB}{204, 41, 54}
+\definecolor{ashgrey}{RGB}{174, 195, 176}
+\definecolor{mandarin}{RGB}{239, 123, 69}
+
+\newcommand{\teal}[1]{{\color{teal}#1}}
+\newcommand{\red}[1]{{\color{madderlake}#1}}
+\newcommand{\orange}[1]{{\color{mandarin}#1}}
+
+\setbeamertemplate{frame footer}{\insertshorttitle}
+\setbeamertemplate{itemize/enumerate body begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subbody begin}{\small}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{theorems}[numbered]
+
+\setbeamercolor{alerted text}{fg=lighthublue}
+\setbeamercolor{block title example}{fg=hublue}
+\setbeamercolor{footline}{fg=hublue}
+\setbeamercolor{frametitle}{fg=hublue, bg=black!2}
+\setbeamercolor{normal text}{fg=hublue}
+\setbeamercolor{progress bar}{fg=hublue}
+
+\setbeamerfont{alerted text}{shape=\itshape}
+\setbeamerfont{author}{series=\bfseries}
+\setbeamerfont{footline}{shape=\itshape}
+\setbeamerfont{page number in head/foot}{size=\tiny}
+\setbeamerfont{section title}{size=\LARGE}
+
+% default styles for plots
+\pgfplotsset{width=\textwidth, compat=1.9}
+\pgfplotscreateplotcyclelist{hubcols}{
+    {tealblue},
+    {madderlake},
+    {ashgrey}
+}
+\pgfplotsset{
+    tikzDefaults/.style={
+        cycle list name=hubcols,
+        font=\small,
+        line width = 1pt,
+        legend style={
+            at={(0.5,-0.2)},
+            anchor=north, 
+            column sep=7pt,
+            draw=none,
+            fill=black!2
+        },
+        legend columns=2,
+        axis x line=bottom,
+        axis y line=middle,
+        tick style={draw=hublue, semithick},
+        tick align=outside,
+        every axis/.append style={font=\tiny},
+    },
+    samples=100
+}
+
+% remove rules from algos while retaining the ruled layout
+\setlength{\algoheightrule}{0pt}
+\setlength{\algotitleheightrule}{0pt}
+
+\input{macros.tex}
+
+\begin{document}
+    \maketitle
+    
+    \metroset{sectionpage=none}
+    \input{sections/orga}
+    
+    \begin{frame}{Behandelte Themen}
+        \tableofcontents
+    \end{frame}
+    
+    \metroset{sectionpage=simple}
+    \input{sections/complexity}
+\end{document}
