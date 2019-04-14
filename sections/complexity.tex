@@ -4,7 +4,7 @@
 \begin{block}{Knappheit von Ressourcen}
     \begin{itemize}
         \item Speicherplatz (Register, RAM, HDD/SSD, Tape, ...)
-        \item \alert{Rechenleistung} (Taktzyklen)
+        \item \alert{Rechenleistung} (Taktfrequenz)
     \end{itemize}
 \end{block}
 
@@ -22,72 +22,125 @@
 \begin{frame}{Berechnungsmodell}
 Wir analysieren \alert{abstrakte Algorithmen} -- folglich st\"utzen wir unsere Analysen auf \alert{abstrakte Maschinen}.
 
-Beispielsweise ist die \alert{Random Access Machine (RAM)} ein zur \alert{Turingmaschine} \"aquivalentes und f\"ur unsere Zwecke leichter zu handhabendes Modell.
+\medskip
+
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.54\textwidth}
+Beispielsweise ist die \alert{Random Access Machine} eine zur \alert{Turingmaschine} \"aquivalente und f\"ur unsere Zwecke leichter zu handhabende Abstraktion einen realen Computers.
+\end{column}
+\begin{column}{0.4\textwidth}
+\begin{tikzpicture}
+
+\end{tikzpicture}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}<1>[label=first_example]{Ein einfaches Beispiel}
+\begin{frame}<1-2>[label=first_example]{Ein einfaches Beispiel}
+\begin{example}
 Gegeben sei eine Liste natürlicher Zahlen $a_1, \dots, a_n \in \nat$.
 
-Bestimme $k = a_i \cdot a_j$ mit $1 \leq i < j \leq n$, sodass $k$ \alert{maximiert} wird.
+Maximiere $x = a_i \cdot a_j$ mit $1 \leq i < j \leq n$.
 
 \begin{quote}
     In Worten: Finde das \alert{gr\"o{\ss}te} Produkt, das sich aus zwei \alert{verschiedenen} Elementen der Liste bilden lässt.
 \end{quote}
 
-\begin{block}{M\"ogliche Ans\"atze}
+\begin{block}<2->{M\"ogliche Ans\"atze}
     \begin{enumerate}
-        \item<1-> Betrachte alle möglichen Paare und berechne deren Produkt
+        \item Betrachte alle möglichen Paare und berechne deren Produkt
         \pause
-        \item<3-> Suche die beiden kleinsten Elemente $a_i, a_j$ und gib $a_i \cdot a_j$ aus
+        \item<4-> Suche die beiden gr\"o{\ss}ten Elemente $a_i, a_j$ und gib $a_i \cdot a_j$ aus
     \end{enumerate}
 \end{block}
+\end{example}
 \end{frame}
 
-\begin{frame}{Algorithmus \& Analyse}
+\begin{frame}
+\frametitle<1>{Algorithmus}
+\frametitle<2>{Algorithmus \& Analyse}
 \begin{columns}[T,onlytextwidth]
     \begin{column}{0.42\textwidth}
         \vspace{-5pt}
         \begin{algorithm}[H]
-        	\caption{Maximales Produkt}
+        	\caption{Maximales Produkt 1}
         	\label{alg:max_prod}
         	\DontPrintSemicolon
         	\Input{$a_1, \dots, a_n \in \nat$}
             \Output{$\max \{ a_i \cdot a_j : 1 \leq i < j \leq n \}$}
-        	$k \gets 0$\;
+        	$x \gets 0$\;
         	\For{$i \gets 1$ \KwTo $n$}{
         	    \For{$j \gets i + 1$ \KwTo $n$}{
-        	        \If{$a_i \cdot a_j > k$}{
-        	            $k \gets a_i \cdot a_j$\;
+        	        \If{$a_i \cdot a_j > x$}{
+        	            $x \gets a_i \cdot a_j$\;
         	        }
                 }
             }
-            \Return{$k$}
+            \Return{$x$}
         \end{algorithm}
     \end{column}
-    \begin{column}{0.52\textwidth}
+    \begin{column}<2>{0.52\textwidth}
         Die \"au{\ss}ere \textbf{for}-Schleife wird $n$-mal durchlaufen, die innere \textbf{for}-Schleife $n-1, n-2, \dots, 0$-mal
         \begin{itemize}
             \item Anwendung der \alert{gaußschen Summenformel} liefert $\frac{n \, (n-1)}{2}$
         \end{itemize}
         
-        Der Aufwand des \textbf{if}-Statements ist von $n$ (bzw. $i, j$) \alert{unabh\"angig}
+        Der Aufwand des \textbf{if}-Statements ist von $n$ \alert{unabh\"angig}
         \begin{itemize}
             \item Multiplikationen, Vergleiche und Zuweisungen ben\"otigen lediglich \alert{konstant} viel Zeit
         \end{itemize}
         
-        Insgesamt $4 \cdot \frac{n \, (n-1)}{2} + 2$ Instruktionen
+        Insgesamt $\leq 4 \cdot \frac{n \, (n-1)}{2} + 2$ Instruktionen
     \end{column}
 \end{columns}
 \end{frame}
 
-\againframe<2->{first_example}
+\againframe<3->{first_example}
 
-\begin{frame}{$\bigO$-Notation}
+\begin{frame}
+\frametitle<1>{Algorithmus}
+\frametitle<2>{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Maximales Produkt 2}
+        	\label{alg:max_prod_ii}
+        	\DontPrintSemicolon
+        	\Input{$a_1, \dots, a_n \in \nat$}
+            \Output{$\max \{ a_i \cdot a_j : 1 \leq i < j \leq n \}$}
+        	$k \gets 0, \quad \ell \gets 0$\;
+        	\For{$i \gets 1$ \KwTo $n$}{
+        	    \If{$a_i > a_k$}{
+        	        $\ell \gets k, \quad k \gets i$\;
+    	        }
+    	        \ElseIf{$a_i > a_{\ell}$}{
+    	            $\ell \gets i$\;
+    	        }
+            }
+            \Return{$a_k \cdot a_{\ell}$}
+        \end{algorithm}
+    \end{column}
+    \begin{column}<2>{0.5\textwidth}
+        Die \textbf{for}-Schleife wird genau $n$-mal durchlaufen
+        
+        \medskip
+        
+        Innerhalb der \textbf{if}-Statements f\"uhren wir lediglich grundlegende Operationen wie Vergleiche und Zuweisungen durch
+        
+        \medskip
+        
+        Insgesamt $\leq 3 \, n$ Instruktionen
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{\MakeUppercase{$\bigO$}-Notation}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.47\textwidth}
     \begin{definition}[$\bigO$-Notation]
-    Seien $\teal{f}, \red{g}: \nat \to \nat$ Funktionen.
-    Wir schreiben $\teal{f} \in \bigO(\red{g})$ genau dann, wenn es eine Konstante $\orange{c} \in \nat$ gibt, sodass ab einem Index $n_0$ f\"ur alle $n \geq n_0$ gilt, dass $\teal{f}(n) \leq \orange{c} \cdot \red{g}(n)$.
+    Seien $\teal{f}, \red{g}: \real \to \real$ Funktionen.
+    Wir schreiben $\teal{f} \in \bigO(\red{g})$ genau dann, wenn es eine Konstante $\orange{c} \in \realpos$ gibt, sodass ab einem $n_0$ f\"ur alle $n \geq n_0$ gilt, dass $\teal{f}(n) \leq \orange{c} \cdot \red{g}(n)$.
     \end{definition}
     
     \medskip
@@ -111,22 +164,35 @@ Bestimme $k = a_i \cdot a_j$ mit $1 \leq i < j \leq n$, sodass $k$ \alert{maximi
 \end{frame}
 
 \begin{frame}{Beispiel}
-\begin{beispiel}
-Sei $f(n) \coloneqq 3 \, n + 5$ und $g(n) \coloneqq 2 \, n$.
+\begin{example}
+Sei \teal{$f(n) \coloneqq 3 \, n + 5$} und \red{$g(n) \coloneqq 2 \, n$}.
 
-Um zu zeigen, dass $f \in \bigO(g)$ ist, w\"ahlen wir {\color{madderlake} $c=2$} und erhalten 
+Um zu zeigen, dass $\teal{f} \in \bigO(\red{g})$ ist, w\"ahlen wir \orange{$c=2$} und erhalten
 \begin{equation*}
-    \underbrace{3 \, n + 5}_{f(n)} \leq {\color{madderlake} 2} \cdot \underbrace{2 \, n}_{g(n)} = 3 \, n + n.
+    \teal{\only<1>{3 \, n} \only<2->{\cancel{3 \, n}} + 5} \leq \orange{2} \cdot \red{2 \, n} = \only<1>{3 \, n} \only<2->{\cancel{3 \, n}} + n.
 \end{equation*}
-F\"ur $n \geq 5$ ist also $f(n) \leq {\color{madderlake} 2} \cdot g(n)$ und somit $n_0 = 5$.
-\end{beispiel}
+\only<2->{F\"ur $n \geq 5$ ist also $\teal{f(n)} \leq \orange{2} \cdot \red{g(n)}$ und somit $n_0 = 5$.}
+\end{example}
+\end{frame}
+
+\begin{frame}{Bemerkungen}
+\begin{remark}<+->
+In der Praxis schreibt man h\"aufig $f(n) \in \bigO(g(n))$ anstelle von $f \in \bigO(g)$.
+
+Beispielsweise ist $$\teal{2 \, n^2 + n} \in \bigO(\red{n^2})$$ \"aquivalent zu $$\teal{f} \in \bigO(\red{g}) \text{ f\"ur } \teal{f(n) \coloneqq 2 \, n^2 + n} \text{ und } \red{g(n) \coloneqq n^2}.$$
+\end{remark}
+
+\begin{remark}<+->
+F\"ur Algorithmus \ref{alg:max_prod} konnten wir zeigen, dass dieser h\"ochstens $4 \cdot \frac{n \, (n-1)}{2} + 2 \in \bigO(n^2)$ Instruktionen ausf\"uhrt.
+Demgegen\"uber ben\"otigt Algorithmus \ref{alg:max_prod_ii} nur h\"ochstens $3 \, n \in \bigO(n)$ Instruktionen und ist somit \alert{asymptotisch} effizienter ist als Algorithmus \ref{alg:max_prod}.
+\end{remark}
 \end{frame}
 
 \begin{frame}{Eine leichte Aufgabe}
 \begin{task}<1->
-Sei $f(n) \coloneqq 6 \, n + 7$ und $g(n) \coloneqq n$.
+Sei $f(n) \coloneqq 6 \, n + 7$.
 
-Zeigen Sie, dass $f \in \bigO(g)$ ist, d.h. finden Sie $c, n_0 \in \nat$, sodass f\"ur alle $n \geq n_0$ gilt, dass $f(n) \leq c \cdot g(n)$.
+Zeigen Sie, dass $f(n) \in \bigO(n)$ ist, d.h. finden Sie $c \in \realpos, n_0 \in \real$, sodass f\"ur alle $n \geq n_0$ gilt, dass $f(n) \leq c \cdot n$.
 \end{task}
 
 \begin{solution}<2->
@@ -135,13 +201,43 @@ F\"ur $c = 7$ ist $6 \, n + 7 \leq 7 \, n = 6 \, n + n$ f\"ur alle $n \geq n_0 \
 \end{frame}
 
 \begin{frame}{Mehr Aufgaben}
-\begin{task}<1->
-Zeigen Sie jeweils, dass $f \in \bigO(g)$ ist:
-\begin{enumerate}
-    \item $f(n) \coloneqq 12 \, n - 4$ und $g(n) \coloneqq n$
-    \item $f(n) \coloneqq 7 \, n + 1$ und $g(n) \coloneqq n^2$
-    \item $f(n) \coloneqq \log(n^2)$ und $g(n) \coloneqq \log(n)$
-\end{enumerate}
-F\"ur welche der Aufgaben gilt auch $g \in \bigO(f)$?
+\begin{task}
+Beweisen oder widerlegen Sie:
+\begin{subtasks}
+    \item $12 \, n - 4 \in \bigO(n)$
+    \item $7 \, n + 1 \in \bigO(n^2)$
+    \item $\log(n^2) \in \bigO(\log n)$
+\end{subtasks}
+\end{task}
+\end{frame}
+
+\begin{frame}{Alternative Definition}
+\begin{definition}[$\bigO$-Notation]
+Seien $\teal{f}, \red{g}: \real \to \real$ Funktionen.
+Wir schreiben $\teal{f} \in \bigO(\red{g})$ genau dann, wenn $\limsup_{n \to \infty} \frac{\teal{f(n)}}{\red{g(n)}} < \infty$ und $\red{g(n)} > 0$ f\"ur alle $n \in \nat$.
+\end{definition}
+
+Das folgende Theorem liefert ein bei dieser Charakterisierung h\"aufig sehr n\"utzliches Werkzeug.
+
+\begin{theorem}[Satz von L'Hospital]
+...
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Ein Beispiel zum Satz von L'Hospital}
+\begin{example}
+
+\end{example}
+\end{frame}
+
+\begin{frame}{Aufgaben zum Satz von L'Hospital}
+\begin{task}
+
+\end{task}
+\end{frame}
+
+\begin{frame}{Aufgabe zur Analyse von Algorithmen}
+\begin{task}
+
 \end{task}
 \end{frame}

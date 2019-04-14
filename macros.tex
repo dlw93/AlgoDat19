@@ -2,6 +2,7 @@
 \newcommand{\nat}{\mathbb{N}}
 \newcommand{\natpos}{\mathbb{N}_{\geq 1}}
 \newcommand{\real}{\mathbb{R}}
+\newcommand{\realpos}{\mathbb{R}_{> 0}}
 \newcommand{\powerset}{\mathcal{P}}
 \newcommand{\bigO}{\mathcal{O}}
 \DeclareMathOperator{\cupdot}{\mathbin{\mathaccent\cdot\cup}}
@@ -25,8 +26,18 @@
 
 % theorem environments
 \theoremstyle{definition}
-\newtheorem{beispiel}{Beispiel}
-\newtheorem{task}{Aufgabe}
+\newtheorem{theorem}[algocf]{\translate{Theorem}}
+\newtheorem{definition}[algocf]{\translate{Definition}}
+\newtheorem{example}[algocf]{\translate{Example}}
+\newtheorem{task}[algocf]{\translate{Task}}
+\newtheorem*{solution}{\translate{Solution}}
+\newtheorem*{remark}{Bemerkung}
 
-\theoremstyle{remark}
-\newtheorem*{bemerkung}{Bemerkung}
+% enumerate environments
+\newenvironment{subtasks}{
+    \setbeamertemplate{enumerate item}{(\alph{enumi})}
+    \setbeamerfont{enumerate item}{series=\bfseries}
+    \begin{enumerate}
+}{
+    \end{enumerate}
+}

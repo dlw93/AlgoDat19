@@ -1,16 +1,27 @@
-\documentclass[aspectratio=169, t, envcountsect]{beamer}
-\usetheme[sectionpage=simple]{metropolis}
+\documentclass[aspectratio=169, t, envcountsect, smaller, notheorems]{beamer}
+\usetheme[sectionpage=simple, titleformat=allsmallcaps]{metropolis}
 \usepackage[ngerman]{babel}
-\usepackage{amssymb, mathtools, pgfplots}
-\usepackage[ruled, linesnumbered, vlined, ngerman]{algorithm2e}
+\usepackage{amssymb, mathtools, cancel, pgfplots}
+\usepackage[ruled, linesnumbered, vlined, ngerman, algosection]{algorithm2e}
 \usepackage{hyperref}
-\usepackage[capitalise]{cleveref}
 
 \title[Algorithmen und Datenstrukturen]{Tutorium\\Algorithmen und Datenstrukturen}
 \subtitle{Sommersemester 2019}
 \author{David Luis Wiegandt}
 \institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
 \date{}
+
+\setsansfont[Path = fonts/, UprightFont = *-Regular, BoldFont = *-Medium, ItalicFont = *-Italic]{FiraSans}
+
+\resetcounteronoverlays{algocf}
+\resetcounteronoverlays{theorem}
+
+\uselanguage{german}
+\languagepath{german}
+\deftranslation[to=german]{Solution}{L\"osung}
+\deftranslation[to=german]{Example}{Beispiel}
+\deftranslation[to=german]{Task}{Aufgabe}
+\deftranslation[to=german]{Remark}{Bemerkung}
 
 \definecolor{hublue}{RGB}{0, 55, 108}
 \definecolor{lighthublue}{RGB}{9, 80, 159}
@@ -24,6 +35,8 @@
 \newcommand{\orange}[1]{{\color{mandarin}#1}}
 
 \setbeamertemplate{frame footer}{\insertshorttitle}
+\setbeamertemplate{itemize item}{\fontsize{3}{4}\raise2.5pt\hbox{\donotcoloroutermaths$\blacksquare$}}
+\setbeamertemplate{itemize subitem}{\fontsize{2.5}{3.5}\raise2.5pt\hbox{\donotcoloroutermaths$\blacksquare$}}
 \setbeamertemplate{itemize/enumerate body begin}{\normalsize}
 \setbeamertemplate{itemize/enumerate subbody begin}{\small}
 \setbeamertemplate{section in toc}[sections numbered]
@@ -39,7 +52,7 @@
 \setbeamerfont{alerted text}{shape=\itshape}
 \setbeamerfont{author}{series=\bfseries}
 \setbeamerfont{footline}{shape=\itshape}
-\setbeamerfont{page number in head/foot}{size=\tiny}
+\setbeamerfont{page number in head/foot}{size=\scriptsize}
 \setbeamerfont{section title}{size=\LARGE}
 
 % default styles for plots
@@ -80,13 +93,34 @@
 \begin{document}
     \maketitle
     
-    \metroset{sectionpage=none}
-    \input{sections/orga}
+    \begin{frame}{Organisatorisches}
+    \begin{block}{Zeit \& Ort}
+        \begin{itemize}
+            \item Mittwoch (RUD 25, 4.112) und Donnerstag (RUD 25, 4.113) von 13 bis 15 Uhr
+            \item Teilnahme ist \alert{freiwillig} und \alert{flexibel}
+            \begin{itemize}
+                \item Ihr könnt stets an \alert{einem}, \alert{beiden} oder \alert{keinem} der Termine erscheinen
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+    
+    \begin{block}{Inhalte}
+        \begin{itemize}
+            \item Fokus ist die \alert{Wiederholung} von Inhalten aus Vorlesung und Übung
+            \item Dar\"uber hinaus ist auch die \alert{Vertiefung} von Inhalten aus der Vorlesung m\"oglich
+        \end{itemize}
+    \end{block}
+    
+    \begin{block}{Bei Fragen}
+        \begin{itemize}
+            \item Im Tutorium oder jederzeit per Mail an \alert{\href{mailto:wigandtd@hu-berlin.de}{wigandtd@hu-berlin.de}}
+        \end{itemize}
+    \end{block}
+    \end{frame}
     
     \begin{frame}{Behandelte Themen}
         \tableofcontents
     \end{frame}
     
-    \metroset{sectionpage=simple}
     \input{sections/complexity}
 \end{document}
