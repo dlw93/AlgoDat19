@@ -1,7 +1,7 @@
 \documentclass[aspectratio=169, t, envcountsect, smaller, notheorems]{beamer}
 \usetheme[sectionpage=simple, titleformat=allsmallcaps]{metropolis}
 \usepackage[ngerman]{babel}
-\usepackage{amssymb, mathtools, cancel, pgfplots}
+\usepackage{amssymb, mathtools, cancel, pgfplots, nicefrac}
 \usepackage[ruled, linesnumbered, vlined, ngerman, algosection]{algorithm2e}
 \usepackage{hyperref}
 
@@ -10,6 +10,7 @@
 \author{David Luis Wiegandt}
 \institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
 \date{}
+\titlegraphic{\includegraphics[width=75pt, height=75pt]{images/husiegel_bw.eps}}
 
 \setsansfont[Path = fonts/, UprightFont = *-Regular, BoldFont = *-Medium, ItalicFont = *-Italic]{FiraSans}
 
@@ -30,9 +31,12 @@
 \definecolor{ashgrey}{RGB}{174, 195, 176}
 \definecolor{mandarin}{RGB}{239, 123, 69}
 
-\newcommand{\teal}[1]{{\color{teal}#1}}
-\newcommand{\red}[1]{{\color{madderlake}#1}}
-\newcommand{\orange}[1]{{\color{mandarin}#1}}
+\newcommand<>{\teal}[1]{\textit#2{\color#2{teal}#1}}
+\newcommand<>{\red}[1]{\textit#2{\color#2{madderlake}#1}}
+\newcommand<>{\orange}[1]{\textit#2{\color#2{mandarin}#1}}
+
+\makeatletter
+\patchcmd{\beamer@sectionintoc}{\vfill}{\vskip\itemsep}{}{}
 
 \setbeamertemplate{frame footer}{\insertshorttitle}
 \setbeamertemplate{itemize item}{\fontsize{3}{4}\raise2.5pt\hbox{\donotcoloroutermaths$\blacksquare$}}
@@ -48,12 +52,38 @@
 \setbeamercolor{frametitle}{fg=hublue, bg=black!2}
 \setbeamercolor{normal text}{fg=hublue}
 \setbeamercolor{progress bar}{fg=hublue}
+\setbeamercolor{title page header}{fg=white, bg=hublue}
 
 \setbeamerfont{alerted text}{shape=\itshape}
-\setbeamerfont{author}{series=\bfseries}
+\setbeamerfont{author}{series=\bfseries, size=\small}
 \setbeamerfont{footline}{shape=\itshape}
 \setbeamerfont{page number in head/foot}{size=\scriptsize}
 \setbeamerfont{section title}{size=\LARGE}
+\setbeamerfont{title}{size=\LARGE}
+
+\setbeamertemplate{title page}{
+\vspace*{-1pt}
+\begin{beamercolorbox}[wd=\paperwidth,ht=0.618\paperheight]{title page header}
+    \vfill
+    \raggedright%
+    \leftskip28pt%
+    {\usebeamerfont{title}\inserttitle}
+    \par
+    \vspace*{3pt}
+    {\usebeamerfont{subtitle}\insertsubtitle}
+    \vspace*{-5pt}
+    \vfill
+    \tikz[remember picture, overlay] \node[anchor=center] at (0.785\paperwidth,0) {\inserttitlegraphic};
+\end{beamercolorbox}
+\vspace*{2pt}
+{\usebeamerfont{author}\beamer@shortauthor}
+\par
+\vspace{5pt}
+{\usebeamerfont{institute}\insertinstitute}
+\vspace*{2pt}
+\vfill
+}
+\makeatother
 
 % default styles for plots
 \pgfplotsset{width=\textwidth, compat=1.9}
@@ -113,7 +143,7 @@
     
     \begin{block}{Bei Fragen}
         \begin{itemize}
-            \item Im Tutorium oder jederzeit per Mail an \alert{\href{mailto:wigandtd@hu-berlin.de}{wigandtd@hu-berlin.de}}
+            \item Im Tutorium oder per Mail an \alert{\href{mailto:wigandtd@hu-berlin.de}{wigandtd@hu-berlin.de}}
         \end{itemize}
     \end{block}
     \end{frame}
@@ -122,5 +152,6 @@
         \tableofcontents
     \end{frame}
     
-    \input{sections/complexity}
+    \input{sections/pseudocode}
+    %\input{sections/complexity}
 \end{document}

@@ -1,0 +1,339 @@
+\section{Laufzeitanalyse}
+
+\begin{frame}{Hintergrund}
+\begin{block}{Knappheit von Ressourcen}
+    \begin{itemize}
+        \item Speicherplatz (Register, RAM, HDD/SSD, Tape, ...)
+        \item \alert{Rechenleistung} (Taktfrequenz)
+    \end{itemize}
+\end{block}
+\begin{block}{Eine Problemstellung -- viele Lösungsansätze}
+    \begin{itemize}
+        \item Welchen Ansatz sollen wir nutzen?
+        \item Ziel: Klassifiziere Lösungsansätze nach ihrer \alert{Eignung}
+        \begin{itemize}
+            \item Eignung $\approx$ Ressourcenbedarf
+        \end{itemize}
+    \end{itemize}
+\end{block}
+\begin{block}{Berechnungsmodell}
+    \begin{itemize}
+        \item Wir analysieren \alert{abstrakte Algorithmen} -- folglich st\"utzen wir unsere Analysen auf \alert{abstrakte Maschinen}
+    \end{itemize}
+\end{block}
+\end{frame}
+
+% \begin{frame}{Berechnungsmodell}
+% Wir analysieren \alert{abstrakte Algorithmen} -- folglich st\"utzen wir unsere Analysen auf \alert{abstrakte Maschinen}.
+
+% \medskip
+
+% \begin{columns}[T,onlytextwidth]
+% \begin{column}{0.54\textwidth}
+% Beispielsweise ist die \alert{Random Access Machine} eine zur \alert{Turingmaschine} \"aquivalente und f\"ur unsere Zwecke leichter zu handhabende Abstraktion einen realen Computers.
+% \end{column}
+% \begin{column}{0.4\textwidth}
+% \begin{tikzpicture}
+% \foreach \i in {1,...,4}
+% \draw[draw=hublue] (0,3.5-\i*0.5) rectangle (0.8,4-\i*0.5) node[pos=.5] {$I_{\i}$};
+% \draw[draw=none, anchor=mid] (0,0.5) rectangle (0.8,1.5) node[pos=.5] {$\vdots$};
+% \draw[draw=hublue] (0,0) rectangle (0.8,0.5) node[pos=.5] {$I_m$};
+
+% \foreach \i in {1,...,6}
+% \draw[draw=hublue] (1+\i*0.5,3) rectangle (1.5+\i*0.5,3.5) node[pos=.5] {$r_{\i}$};
+% \draw[draw=none] (4.5,3) rectangle (5,3.5) node[pos=.5] {$\dots$};
+% \end{tikzpicture}
+% \end{column}
+% \end{columns}
+% \end{frame}
+
+\begin{frame}<1-2>[label=first_example]{Ein einfaches Beispiel}
+\begin{example}
+Gegeben sei eine Liste natürlicher Zahlen $a_1, \dots, a_n \in \nat$.
+
+Maximiere $x = a_i \cdot a_j$ mit $1 \leq i < j \leq n$.
+
+\begin{quote}
+    In Worten: Finde das \alert{gr\"o{\ss}te} Produkt, das sich aus zwei \alert{verschiedenen} Elementen der Liste bilden lässt.
+\end{quote}
+
+\begin{block}<2->{M\"ogliche Ans\"atze}
+    \begin{enumerate}
+        \item Betrachte alle möglichen Paare und berechne deren Produkt
+        \pause
+        \item<4-> Suche die beiden gr\"o{\ss}ten Elemente $a_i, a_j$ und gib $a_i \cdot a_j$ aus
+    \end{enumerate}
+\end{block}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle<1>{Algorithmus}
+\frametitle<2>{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.43\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Maximales Produkt 1}
+        	\label{alg:max_prod}
+        	\DontPrintSemicolon
+        	\Input{$a_1, \dots, a_n \in \nat$}
+            \Output{$\max \{ a_i \cdot a_j : 1 \leq i < j \leq n \}$}
+        	$x \gets 0$\;
+        	\For{$i \gets 1$ \KwTo $n - 1$}{
+        	    \For{$j \gets i + 1$ \KwTo $n$}{
+        	        \If{$a_i \cdot a_j > x$}{
+        	            $x \gets a_i \cdot a_j$\;
+        	        }
+                }
+            }
+            \Return{$x$}
+        \end{algorithm}
+    \end{column}
+    \begin{column}<2>{0.51\textwidth}
+        Die \"au{\ss}ere \textbf{for}-Schleife wird $(n-1)$-mal durchlaufen, die innere \textbf{for}-Schleife $n-1, n-2, \dots, 1$-mal
+        \begin{itemize}
+            \item Anwendung der \alert{gaußschen Summenformel} liefert $\frac{n \, (n-1)}{2}$
+        \end{itemize}
+        
+        Der Aufwand des \textbf{if}-Statements ist von $n$ \alert{unabh\"angig}
+        \begin{itemize}
+            \item Multiplikationen, Vergleiche und Zuweisungen ben\"otigen lediglich \alert{konstant} viel Zeit
+        \end{itemize}
+        
+        Insgesamt $\leq 4 \cdot \frac{n \, (n-1)}{2} + 2$ Instruktionen
+    \end{column}
+\end{columns}
+\end{frame}
+
+\againframe<3->{first_example}
+
+\begin{frame}
+\frametitle<1>{Algorithmus}
+\frametitle<2>{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Maximales Produkt 2}
+        	\label{alg:max_prod_ii}
+        	\DontPrintSemicolon
+        	\Input{$a_1, \dots, a_n \in \nat$}
+            \Output{$\max \{ a_i \cdot a_j : 1 \leq i < j \leq n \}$}
+        	$k \gets 0, \quad \ell \gets 0$\;
+        	\For{$i \gets 1$ \KwTo $n$}{
+        	    \If{$a_i > a_k$}{
+        	        $\ell \gets k, \quad k \gets i$\;
+    	        }
+    	        \ElseIf{$a_i > a_{\ell}$}{
+    	            $\ell \gets i$\;
+    	        }
+            }
+            \Return{$a_k \cdot a_{\ell}$}
+        \end{algorithm}
+    \end{column}
+    \begin{column}<2>{0.5\textwidth}
+        Die \textbf{for}-Schleife wird genau $n$-mal durchlaufen
+        
+        \medskip
+        
+        Innerhalb der \textbf{if}-Statements f\"uhren wir lediglich grundlegende Operationen wie Vergleiche und Zuweisungen durch
+        
+        \medskip
+        
+        Insgesamt $\leq 3 \, n + 4$ Instruktionen
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[label=second_example]{Ein komplexeres Beispiel}
+\begin{example}
+Wir nennen eine Sequenz $A = a_1, \dots, a_n \in \nat$ \alert{partitionierbar}, falls  es $k, \ell \in \{1, \dots, n\}$ gibt, sodass $\sum_{i=k}^{\ell} a_i = \frac{1}{2} \cdot  \sum_{i=1}^{n} a_i$.
+
+Entscheide f\"ur eine Sequenz $A = a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} = \{1, \dots, n\}$, ob diese partitionierbar ist.
+
+\begin{quote}
+    In Worten: Entscheide f\"ur eine \alert{Permutation} der nat\"urlichen Zahlen von $1$ bis $n$, ob es eine \alert{zusammenh\"angende Subsequenz} gibt, deren Summe die \alert{H\"alfte} der Summe der Gesamtsequenz ist.
+\end{quote}
+
+\begin{block}<2->{M\"ogliche Ans\"atze}
+    \begin{enumerate}
+        \item Berechne die Summe aller möglichen Subsequenzen \emph{from scratch}
+        \pause
+        \item<4-> Nutze \alert{dynamische Programmierung}, um fr\"uhere Teilergebnisse wiederzuverwenden
+    \end{enumerate}
+\end{block}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle<1->{Algorithmus}
+\frametitle<2->{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.43\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Subsequenz 1}
+        	\label{alg:subseq_part_1}
+        	\DontPrintSemicolon
+        	\Input{$A = a_1, \dots, a_n \in \nat$}
+            \Output{Ist $A$ partitionierbar?}
+        	{\color<2>{madderlake}$s \gets \frac{n \, (n+1)}{4}$\;}
+        	\For{$k \gets 1$ \KwTo $n$}{
+        	    \For{$\ell \gets k$ \KwTo $n$}{
+        	        {\color<3>{madderlake}$s' \gets 0$\;}
+        	        \For{$i \gets k$ \KwTo $\ell$}{
+        	            {\color<5>{madderlake}$s' \gets s + a_i$\;}
+                    }
+                    \If{{\color<3>{madderlake}$s' = s$}}{
+                        {\color<4>{madderlake}\Return{\True}}
+                    }
+                }
+            }
+            {\color<4>{madderlake}\Return{\False}}
+        \end{algorithm}
+    \end{column}
+    \begin{column}<2->{0.51\textwidth}
+        \only<2->{
+            Die \red<2>{Initialisierung} ben\"otigt 4 Instruktionen
+            \begin{itemize}
+                \item Eine Addition, eine Multiplikation, eine Division und eine Zuweisung
+            \end{itemize}
+        }
+        
+        \only<3->{
+            Die \red<3>{Zuweisung} in Zeile $4$ und der \red<3>{Vergleich} in Zeile $6$ werden h\"ochstens $\frac{n \, (n+1)}{2}$-mal ausgef\"uhrt
+        }
+        
+        \medskip
+        
+        \only<4->{
+            Einmalig wird ein Wert \red<4>{zurückgegeben}
+        }
+        
+        \medskip
+        
+        \only<5->{
+            Die \red<5>{innere \textbf{for}-Schleife} wird $\frac{n \, (n+1) \, (n+2)}{6}$-mal durchlaufen (Details: n\"achste Folie!)
+            \begin{itemize}
+                \item Entsprechend wird auch Zeile $6$ so oft ausgef\"uhrt
+            \end{itemize}
+        }
+        
+        \only<6->{
+            Insgesamt $\leq \nicefrac{1}{3} \, n \, (n+1) \, (n+5) + 5$ Instruktionen
+        }
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Details zur Laufzeitschranke}
+    \begin{block}{Beobachtungen}
+        \begin{itemize}
+            \item Die innere \textbf{for}-Schleife wird stets $(\ell - k + 1)$-mal durchlaufen
+            \begin{itemize}
+                \item F\"ur $k = 1$ also $1, \dots, n$-mal
+                \item F\"ur $k = 2$ also $1, \dots, (n-1)$-mal
+                \item F\"ur $k = n$ also $1, \dots, (n-n+1)$-mal
+            \end{itemize}
+            \item Als Summe ergibt sich $\sum_{i=1}^n \frac{i \, (i+1)}{2} = \frac{1}{2} \, \sum_{i=1}^n i \, (i+1) = \frac{1}{2} \, \left(\sum_{i=1}^n i^2 + \sum_{i=1}^n i \right)$
+            \begin{itemize}
+                \item Wir wissen, dass $\sum_{i=1}^n i = \frac{1}{2} \, n \, (n+1)$
+                \item F\"ur $\sum_{i=1}^n i^2$ k\"onnen wir per vollst\"andiger Induktion zeigen, dass $\sum_{i=1}^n i^2 = \frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1)$ gilt
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Details zur Laufzeitschranke (2)}
+    Insgesamt erhalten wir:
+    
+    \begin{align*}
+        \frac{1}{2} \, \left(\sum_{i=1}^n i^2 + \sum_{i=1}^n i \right) &= \frac{1}{2} \, \left(\frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1) + \frac{1}{2} \, n \, (n+1) \right) \\
+        &= \frac{1}{2} \cdot \frac{1}{6} \, \left( n \, (n+1) \, (2\,n+1) + 3 \, n \, (n+1) \right) \\
+        &= \frac{1}{2} \cdot \frac{1}{6} \, (2\,n+1+3) \, n \, (n+1) \\
+        &= \frac{1}{2} \cdot \frac{1}{6} \, 2\, (n+2) \, n \, (n+1) \\
+        &= \frac{1}{6} \, n \, (n+1) \, (n+2)
+    \end{align*}
+\end{frame}
+
+\againframe<3->{second_example}
+
+\begin{frame}{Dynamische Programmierung}
+\begin{block}{Grundidee}
+    \begin{itemize}
+        \item Nutze \alert{Teilergebnisse}, um Ergebnisse f\"ur gr\"o{\ss}ere Instanzen zu bestimmen
+        \item Zum Speichern von Teilergebnissen ben\"otigen wir \alert{zus\"atzlichen Speicherplatz}
+    \end{itemize}
+\end{block}
+
+\begin{example}
+Sei $a_1, \dots, a_n \in \nat$ eine Sequenz nat\"urlicher Zahlen.
+
+Um f\"ur alle $1 \leq k \leq n$ die \alert{kumulierte Summe} $s_k = \sum_{i=1}^{k} a_i$ zu bestimmen, k\"onnen wir
+\begin{enumerate}
+    \item f\"ur jedes $k$ auf's Neue $s_k = a_1 + \cdots + a_{k}$ berechnen, oder
+    \item $s_k$ aus $s_{k-1}$ bestimmen, da $s_k = s_{k-1} + a_k$.
+\end{enumerate}
+\end{example}
+\end{frame}
+
+\begin{frame}
+\frametitle<1->{Algorithmus}
+\frametitle<2->{Algorithmus \& Analyse}
+\begin{columns}[T,onlytextwidth]
+    \begin{column}{0.43\textwidth}
+        \vspace{-5pt}
+        \begin{algorithm}[H]
+        	\caption{Subsequenz 2}
+        	\label{alg:subseq_part_2}
+        	\DontPrintSemicolon
+        	\Input{$A = a_1, \dots, a_n \in \nat$}
+            \Output{Ist $A$ partitionierbar?}
+            {\color<2>{madderlake}
+                $s \gets \frac{n \, (n+1)}{4}$\;
+            	\red<5>{Sei $(m_{i,j}) \in \nat^{n \times n}$ eine Matrix\;}
+        	}
+        	\For{$k \gets 1$ \KwTo $n$}{
+        	    \For{$\ell \gets k$ \KwTo $n$}{
+        	        {\color<3>{madderlake}
+            	        $m_{i,j} \gets m_{i, j - 1} + a_{\ell}$\;
+            	        \If{$m_{i,j} = s$}{
+            	            \red<4>{\Return{\True}}
+            	        }
+        	        }
+                }
+            }
+            \red<4>{\Return{\False}}
+        \end{algorithm}
+    \end{column}
+    \begin{column}<2->{0.51\textwidth}
+        Die \red<2>{Initialisierung} ben\"otigt 4 Instruktionen
+        \begin{itemize}
+            \item Eine Addition, eine Multiplikation, eine Division und eine Zuweisung
+        \end{itemize}
+    
+        \only<3->{
+            Gem\"a{\ss} der gaußschen Summenformel wird der \red<3>{Rumpf} der inneren \textbf{for}-Schleife h\"ochstens $\frac{n \, (n+1)}{2}$-mal ausgef\"uhrt
+            
+            \begin{itemize}
+                \item Dieser beinhaltet $4$ Instruktionen -- eine Subtraktion (in $m_{i, j-1}$), eine Addition, eine Zuweisung und ein Vergleich
+            \end{itemize}
+        }
+        
+        \only<4->{
+            Einmalig wird ein Wert \red<4>{zur\"uckgegeben}
+            
+            \medskip
+        }
+        
+        \only<5>{
+            Insgesamt $2 \, n \, (n+1) + 5$ Instruktionen
+            \begin{itemize}
+                \item Und \red<5>{$\approx n^2$ zus\"atzlicher Speicherplatz}
+            \end{itemize}
+        }
+        
+    \end{column}
+\end{columns}
+\end{frame}
