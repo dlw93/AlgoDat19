@@ -23,30 +23,6 @@
 \end{block}
 \end{frame}
 
-% \begin{frame}{Berechnungsmodell}
-% Wir analysieren \alert{abstrakte Algorithmen} -- folglich st\"utzen wir unsere Analysen auf \alert{abstrakte Maschinen}.
-
-% \medskip
-
-% \begin{columns}[T,onlytextwidth]
-% \begin{column}{0.54\textwidth}
-% Beispielsweise ist die \alert{Random Access Machine} eine zur \alert{Turingmaschine} \"aquivalente und f\"ur unsere Zwecke leichter zu handhabende Abstraktion einen realen Computers.
-% \end{column}
-% \begin{column}{0.4\textwidth}
-% \begin{tikzpicture}
-% \foreach \i in {1,...,4}
-% \draw[draw=hublue] (0,3.5-\i*0.5) rectangle (0.8,4-\i*0.5) node[pos=.5] {$I_{\i}$};
-% \draw[draw=none, anchor=mid] (0,0.5) rectangle (0.8,1.5) node[pos=.5] {$\vdots$};
-% \draw[draw=hublue] (0,0) rectangle (0.8,0.5) node[pos=.5] {$I_m$};
-
-% \foreach \i in {1,...,6}
-% \draw[draw=hublue] (1+\i*0.5,3) rectangle (1.5+\i*0.5,3.5) node[pos=.5] {$r_{\i}$};
-% \draw[draw=none] (4.5,3) rectangle (5,3.5) node[pos=.5] {$\dots$};
-% \end{tikzpicture}
-% \end{column}
-% \end{columns}
-% \end{frame}
-
 \begin{frame}<1-2>[label=first_example]{Ein einfaches Beispiel}
 \begin{example}
 Gegeben sei eine Liste natürlicher Zahlen $a_1, \dots, a_n \in \nat$.
@@ -148,9 +124,9 @@ Maximiere $x = a_i \cdot a_j$ mit $1 \leq i < j \leq n$.
 
 \begin{frame}<1-2>[label=second_example]{Ein komplexeres Beispiel}
 \begin{example}
-Wir nennen eine Sequenz $A = a_1, \dots, a_n \in \nat$ \alert{partitionierbar}, falls  es $k, \ell \in \{1, \dots, n\}$ gibt, sodass $\sum_{i=k}^{\ell} a_i = \frac{1}{2} \cdot  \sum_{i=1}^{n} a_i$.
+Wir nennen eine Sequenz $a_1, \dots, a_n \in \nat$ \alert{partitionierbar}, falls  es $k, \ell \in \{1, \dots, n\}$ gibt, sodass $\sum_{i=k}^{\ell} a_i = \frac{1}{2} \cdot  \sum_{i=1}^{n} a_i$.
 
-Entscheide f\"ur eine Sequenz $A = a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} = \{1, \dots, n\}$, ob diese partitionierbar ist.
+Entscheide f\"ur eine Sequenz $a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} = \{1, \dots, n\}$, ob diese partitionierbar ist.
 
 \begin{quote}
     In Worten: Entscheide f\"ur eine \alert{Permutation} der nat\"urlichen Zahlen von $1$ bis $n$, ob es eine \alert{zusammenh\"angende Subsequenz} gibt, deren Summe die \alert{H\"alfte} der Summe der Gesamtsequenz ist.
@@ -160,7 +136,7 @@ Entscheide f\"ur eine Sequenz $A = a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} =
     \begin{enumerate}
         \item Berechne die Summe aller möglichen Subsequenzen \emph{from scratch}
         \pause
-        \item<4-> Nutze \alert{dynamische Programmierung}, um fr\"uhere Teilergebnisse wiederzuverwenden
+        \item<4-> Nutze die Distributivit\"at der Addition, um redundante Berechnungen zu vermeiden
     \end{enumerate}
 \end{block}
 \end{example}
@@ -183,7 +159,7 @@ Entscheide f\"ur eine Sequenz $A = a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} =
         	    \For{$\ell \gets k$ \KwTo $n$}{
         	        {\color<3>{madderlake}$s' \gets 0$\;}
         	        \For{$i \gets k$ \KwTo $\ell$}{
-        	            {\color<5>{madderlake}$s' \gets s + a_i$\;}
+        	            {\color<5>{madderlake}$s' \gets s' + a_i$\;}
                     }
                     \If{{\color<3>{madderlake}$s' = s$}}{
                         {\color<4>{madderlake}\Return{\True}}
@@ -230,110 +206,117 @@ Entscheide f\"ur eine Sequenz $A = a_1, \dots, a_n$ mit $\{ a_1, \dots, a_n \} =
 \begin{frame}{Details zur Laufzeitschranke}
     \begin{block}{Beobachtungen}
         \begin{itemize}
-            \item Die innere \textbf{for}-Schleife wird stets $(\ell - k + 1)$-mal durchlaufen
+            \item<+-> Die innere \textbf{for}-Schleife wird stets $(\ell - k + 1)$-mal durchlaufen
             \begin{itemize}
-                \item F\"ur $k = 1$ also $1, \dots, n$-mal
-                \item F\"ur $k = 2$ also $1, \dots, (n-1)$-mal
-                \item F\"ur $k = n$ also $1, \dots, (n-n+1)$-mal
+                \item $\underbrace{\underbrace{1}_{\ell=1}, \underbrace{2}_{\ell=2}, \dots, \underbrace{n}_{\ell=n}}_{k=1}\text{-mal}, \underbrace{1, \dots, (n-1)}_{k=2}\text{-mal}, \dots, \underbrace{1, \dots, (n-n+1)}_{k=n}\text{-mal}$
             \end{itemize}
-            \item Als Summe ergibt sich $\sum_{i=1}^n \frac{i \, (i+1)}{2} = \frac{1}{2} \, \sum_{i=1}^n i \, (i+1) = \frac{1}{2} \, \left(\sum_{i=1}^n i^2 + \sum_{i=1}^n i \right)$
-            \begin{itemize}
-                \item Wir wissen, dass $\sum_{i=1}^n i = \frac{1}{2} \, n \, (n+1)$
-                \item F\"ur $\sum_{i=1}^n i^2$ k\"onnen wir per vollst\"andiger Induktion zeigen, dass $\sum_{i=1}^n i^2 = \frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1)$ gilt
-            \end{itemize}
+            \item<+-> Als Summe ergibt sich $$\sum_{i=1}^n \frac{i \, (i+1)}{2} = \frac{1}{2} \, \sum_{i=1}^n i \, (i+1) = \frac{1}{2} \, \left({\color<4>{madderlake} \sum_{i=1}^n i^2} + {\color<3->{mandarin} \sum_{i=1}^n i} \right)$$
+            \item<+-> Wir wissen bereits, dass \orange{$\sum_{i=1}^n i = \frac{1}{2} \, n \, (n+1)$}
+            \item<+-> Wir k\"onnen per vollst\"andiger Induktion zeigen, dass \red{$\sum_{i=1}^n i^2 = \frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1)$}
         \end{itemize}
     \end{block}
 \end{frame}
 
 \begin{frame}{Details zur Laufzeitschranke (2)}
-    Insgesamt erhalten wir:
+    \begin{lemma}\label{lem:nsquaressum}
+    F\"ur alle $n \in \natpos$ gilt $\sum_{i=1}^n i^2 = \frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1)$.
+    \end{lemma}
     
+    \begin{proof}
+    Per Induktion.
+    F\"ur $n=1$ gilt Lemma \ref{lem:nsquaressum} offensichtlich.
+    F\"ur $n \leadsto n+1$ erhalten wir:
     \begin{align*}
-        \frac{1}{2} \, \left(\sum_{i=1}^n i^2 + \sum_{i=1}^n i \right) &= \frac{1}{2} \, \left(\frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1) + \frac{1}{2} \, n \, (n+1) \right) \\
+        \sum_{i=1}^{n+1} i^2 = \sum_{i=1}^{n} i^2 + (n+1)^2 &\overset{!}{=} \frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1) + (n+1)^2 \\
+        &= \frac{1}{6} \, (n + 1) \, (n \, (2 \, n + 1) + 6 \, (n+1)) \\
+        &= \frac{1}{6} \, (n + 1) \, (2 \, n^2 + 7 \, n + 6) \\
+        &= \frac{1}{6} \, (n + 1) \, (n + 2) \, (2 \, n + 3)
+    \end{align*}
+    \end{proof}
+\end{frame}
+
+\begin{frame}{Details zur Laufzeitschranke (3)}
+    Insgesamt erhalten wir f\"ur Algorithmus \ref{alg:subseq_part_1} unter Verwendung der \orange{gaußschen Summenformel} und \red{Lemma \ref{lem:nsquaressum}}:
+    \begin{align*}
+        \frac{1}{2} \, \left({\color{madderlake}\sum_{i=1}^n i^2} + {\color{mandarin}\sum_{i=1}^n i} \right) &= \frac{1}{2} \, \left({\color{madderlake}\frac{1}{6} \, n \, (n + 1) \, (2 \, n + 1)} + {\color{mandarin}\frac{1}{2} \, n \, (n+1)} \right) \\
         &= \frac{1}{2} \cdot \frac{1}{6} \, \left( n \, (n+1) \, (2\,n+1) + 3 \, n \, (n+1) \right) \\
         &= \frac{1}{2} \cdot \frac{1}{6} \, (2\,n+1+3) \, n \, (n+1) \\
-        &= \frac{1}{2} \cdot \frac{1}{6} \, 2\, (n+2) \, n \, (n+1) \\
+        &= \frac{1}{2} \cdot \frac{1}{6} \cdot 2\, (n+2) \, n \, (n+1) \\
         &= \frac{1}{6} \, n \, (n+1) \, (n+2)
     \end{align*}
 \end{frame}
 
-\againframe<3->{second_example}
-
-\begin{frame}{Dynamische Programmierung}
-\begin{block}{Grundidee}
-    \begin{itemize}
-        \item Nutze \alert{Teilergebnisse}, um Ergebnisse f\"ur gr\"o{\ss}ere Instanzen zu bestimmen
-        \item Zum Speichern von Teilergebnissen ben\"otigen wir \alert{zus\"atzlichen Speicherplatz}
-    \end{itemize}
-\end{block}
-
-\begin{example}
-Sei $a_1, \dots, a_n \in \nat$ eine Sequenz nat\"urlicher Zahlen.
-
-Um f\"ur alle $1 \leq k \leq n$ die \alert{kumulierte Summe} $s_k = \sum_{i=1}^{k} a_i$ zu bestimmen, k\"onnen wir
-\begin{enumerate}
-    \item f\"ur jedes $k$ auf's Neue $s_k = a_1 + \cdots + a_{k}$ berechnen, oder
-    \item $s_k$ aus $s_{k-1}$ bestimmen, da $s_k = s_{k-1} + a_k$.
-\end{enumerate}
-\end{example}
+\begin{frame}{Bemerkung zum Algorithmus}
+    \begin{remark}
+        In Algorithmus \ref{alg:subseq_part_1} summieren wir viele Subsequenzen mehrfach.
+        
+        Sei etwa $A = 4, 2, 3, 1$ mit $n=|A|=4$ die Eingabe.
+        Zu Beginn ist $k=1$ und $\ell=1..4$, es werden also nacheinander die Summen $4$, $4+2$, $4+2+3$ und $4+2+3+1$ bestimmt.
+        
+        Tats\"achlich kann aber jede der Summen durch \alert{eine einzelne Addition} zum Ergebnis der vorherigen Summe bestimmt werden.
+        
+        So kann die Laufzeit von $\leq \nicefrac{1}{3} \, n \, (n+1) \, (n+5) + 5$ auf $\leq \nicefrac{1}{2} \, (3 \, n^2 + 5 \, n + 10)$ reduziert werden.
+    \end{remark}
 \end{frame}
 
-\begin{frame}
-\frametitle<1->{Algorithmus}
-\frametitle<2->{Algorithmus \& Analyse}
+\againframe<3->{second_example}
+
+\begin{frame}{Algorithmus \& Analyse}
 \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.43\textwidth}
-        \vspace{-5pt}
-        \begin{algorithm}[H]
-        	\caption{Subsequenz 2}
-        	\label{alg:subseq_part_2}
-        	\DontPrintSemicolon
-        	\Input{$A = a_1, \dots, a_n \in \nat$}
-            \Output{Ist $A$ partitionierbar?}
-            {\color<2>{madderlake}
-                $s \gets \frac{n \, (n+1)}{4}$\;
-            	\red<5>{Sei $(m_{i,j}) \in \nat^{n \times n}$ eine Matrix\;}
-        	}
-        	\For{$k \gets 1$ \KwTo $n$}{
-        	    \For{$\ell \gets k$ \KwTo $n$}{
-        	        {\color<3>{madderlake}
-            	        $m_{i,j} \gets m_{i, j - 1} + a_{\ell}$\;
-            	        \If{$m_{i,j} = s$}{
-            	            \red<4>{\Return{\True}}
-            	        }
-        	        }
-                }
+\begin{column}{0.43\textwidth}
+\vspace{-5pt}
+\begin{algorithm}[H]
+	\caption{Subsequenz 2}
+	\label{alg:subseq_part_2}
+	\DontPrintSemicolon
+	\Input{$A = a_1, \dots, a_n \in \nat$}
+    \Output{Ist $A$ partitionierbar?}
+	$s \gets \frac{n \, (n+1)}{4}$\;
+	\For{$k \gets 1$ \KwTo $n$}{
+	    $s' \gets 0$\;
+	    \For{$\ell \gets k$ \KwTo $n$}{
+	        $s' \gets s' + a_i$\;
+	        
+            \If{$s' = s$}{
+                \Return{\True}
             }
-            \red<4>{\Return{\False}}
-        \end{algorithm}
-    \end{column}
-    \begin{column}<2->{0.51\textwidth}
-        Die \red<2>{Initialisierung} ben\"otigt 4 Instruktionen
-        \begin{itemize}
-            \item Eine Addition, eine Multiplikation, eine Division und eine Zuweisung
-        \end{itemize}
+        }
+    }
+    \Return{\False}
+\end{algorithm}
+\end{column}
+\begin{column}{0.51\textwidth}
+    Die Initialisierung ben\"otigt 4 Instruktionen
     
-        \only<3->{
-            Gem\"a{\ss} der gaußschen Summenformel wird der \red<3>{Rumpf} der inneren \textbf{for}-Schleife h\"ochstens $\frac{n \, (n+1)}{2}$-mal ausgef\"uhrt
-            
-            \begin{itemize}
-                \item Dieser beinhaltet $4$ Instruktionen -- eine Subtraktion (in $m_{i, j-1}$), eine Addition, eine Zuweisung und ein Vergleich
-            \end{itemize}
-        }
-        
-        \only<4->{
-            Einmalig wird ein Wert \red<4>{zur\"uckgegeben}
-            
-            \medskip
-        }
-        
-        \only<5>{
-            Insgesamt $2 \, n \, (n+1) + 5$ Instruktionen
-            \begin{itemize}
-                \item Und \red<5>{$\approx n^2$ zus\"atzlicher Speicherplatz}
-            \end{itemize}
-        }
-        
-    \end{column}
+    \medskip
+    
+    Der Rumpf der \"au{\ss}eren \textbf{for}-Schleife, und somit auch die Zuweisung in Zeile 3, wird h\"ochstens $n$-mal ausgef\"uhrt
+    
+    \medskip
+    
+    Der Rumpf der inneren \textbf{for}-Schleife, bestehend aus einer Addition, einer Zuweisung und einem Vergleich in den Zeilen 5 und 6, wird h\"ochstens $\frac{n \, (n+1)}{2}$-mal ausgef\"uhrt
+    
+    \medskip
+    
+    Einmalig wird ein Wert zur\"uckgegeben
+    
+    \medskip
+    
+    Insgesamt $\leq \nicefrac{1}{2} \, (3 \, n^2 + 5 \, n + 10)$ Instruktionen
+\end{column}
 \end{columns}
+\end{frame}
+
+\begin{frame}{Details zur Laufzeitschranke}
+    Die gegebene Laufzeitschranke von $\nicefrac{1}{2} \, (3 \, n^2 + 5 \, n + 10)$ erhalten wir wie folgt:
+    \begin{align*}
+        4 + n + 3 \cdot \frac{n \, (n+1)}{2} + 1 &= \nicefrac{1}{2} \cdot 3 \, n \, (n+1) + n + 5 \\
+        &= \nicefrac{1}{2} \cdot (3 \, n^2 + 3\, n) + n + 5 \\
+        &= \nicefrac{1}{2} \cdot (3 \, n^2 + 3\, n) + \nicefrac{1}{2} \cdot (2 \, n + 10) \\
+        &= \nicefrac{1}{2} \cdot (3 \, n^2 + 5\, n + 10)
+    \end{align*}
+
+    \begin{remark}
+    Insbesondere haben wir damit gezeigt, dass Algorithmus \ref{alg:subseq_part_2} \alert{asymptotisch effizienter} ist als Algorithmus \ref{alg:subseq_part_1}, da die Laufzeit von Algorithmus \ref{alg:subseq_part_2} in $\bigO(n^2)$, die von Algorithmus \ref{alg:subseq_part_1} hingegen in $\bigO(n^3)$ liegt.
+    \end{remark}
 \end{frame}

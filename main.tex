@@ -5,12 +5,12 @@
 \usepackage[ruled, linesnumbered, vlined, ngerman, algosection]{algorithm2e}
 \usepackage{hyperref}
 
-\title[Algorithmen und Datenstrukturen]{Tutorium\\Algorithmen und Datenstrukturen}
+\title[Algorithmen und Datenstrukturen]{Tutorium \\ Algorithmen und Datenstrukturen}
 \subtitle{Sommersemester 2019}
 \author{David Luis Wiegandt}
 \institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
 \date{}
-\titlegraphic{\includegraphics[width=75pt, height=75pt]{images/husiegel_bw.eps}}
+\titlegraphic{\includegraphics[width=70pt, height=70pt]{images/husiegel_bw.eps}}
 
 \setsansfont[Path = fonts/, UprightFont = *-Regular, BoldFont = *-Medium, ItalicFont = *-Italic]{FiraSans}
 
@@ -65,6 +65,7 @@
 \vspace*{-1pt}
 \begin{beamercolorbox}[wd=\paperwidth,ht=0.618\paperheight]{title page header}
     \vfill
+    \par
     \raggedright%
     \leftskip28pt%
     {\usebeamerfont{title}\inserttitle}
@@ -73,14 +74,16 @@
     {\usebeamerfont{subtitle}\insertsubtitle}
     \vspace*{-5pt}
     \vfill
-    \tikz[remember picture, overlay] \node[anchor=center] at (0.785\paperwidth,0) {\inserttitlegraphic};
+    \tikz[remember picture, overlay] \node[anchor=center] at (0.8\paperwidth,0) {\inserttitlegraphic};
 \end{beamercolorbox}
 \vspace*{2pt}
 {\usebeamerfont{author}\beamer@shortauthor}
+
+\medskip
+\fontsize{10}{8}\selectfont
 \par
-\vspace{5pt}
+
 {\usebeamerfont{institute}\insertinstitute}
-\vspace*{2pt}
 \vfill
 }
 \makeatother
