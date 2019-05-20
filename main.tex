@@ -1,11 +1,17 @@
 \documentclass[aspectratio=169, t, envcountsect, smaller, notheorems]{beamer}
 \usetheme[sectionpage=simple, titleformat=allsmallcaps]{metropolis}
 \usepackage[ngerman]{babel}
-\usepackage{amssymb, mathtools, cancel, pgfplots, nicefrac}
+\usepackage{amssymb, mathtools, cancel, pgfplots, nicefrac, stmaryrd}
 \usepackage[ruled, linesnumbered, vlined, ngerman, algosection]{algorithm2e}
-\usepackage{hyperref}
+\usepackage{array, csquotes, hyperref, tasks, multicol}
 
-\title[Algorithmen und Datenstrukturen]{Tutorium \\ Algorithmen und Datenstrukturen}
+\MakeOuterQuote{"}
+
+\newcolumntype{L}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+\usetikzlibrary{automata, positioning, arrows, patterns, fillbetween}
+
+\title[Algorithmen und Datenstrukturen]{Algorithmen und Datenstrukturen}
 \subtitle{Sommersemester 2019}
 \author{David Luis Wiegandt}
 \institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
@@ -17,12 +23,15 @@
 \resetcounteronoverlays{algocf}
 \resetcounteronoverlays{theorem}
 
+\settasks{label-format=\bfseries, counter-format=(tsk[a]), label-offset=.6em}
+
 \uselanguage{german}
 \languagepath{german}
 \deftranslation[to=german]{Solution}{L\"osung}
 \deftranslation[to=german]{Example}{Beispiel}
 \deftranslation[to=german]{Task}{Aufgabe}
 \deftranslation[to=german]{Remark}{Bemerkung}
+\deftranslation[to=german]{Corollary}{Korollar}
 
 \definecolor{hublue}{RGB}{0, 55, 108}
 \definecolor{lighthublue}{RGB}{9, 80, 159}
@@ -30,10 +39,19 @@
 \definecolor{madderlake}{RGB}{204, 41, 54}
 \definecolor{ashgrey}{RGB}{174, 195, 176}
 \definecolor{mandarin}{RGB}{239, 123, 69}
+\definecolor{amaranth}{RGB}{160, 26, 125}
 
-\newcommand<>{\teal}[1]{\textit#2{\color#2{teal}#1}}
-\newcommand<>{\red}[1]{\textit#2{\color#2{madderlake}#1}}
-\newcommand<>{\orange}[1]{\textit#2{\color#2{mandarin}#1}}
+\newcommand<>{\emphlightblue}[1]{\textit#2{\color#2{lighthublue}#1}}
+\newcommand<>{\emphteal}[1]{\textit#2{\color#2{teal}#1}}
+\newcommand<>{\emphred}[1]{\textit#2{\color#2{madderlake}#1}}
+\newcommand<>{\emphorange}[1]{\textit#2{\color#2{mandarin}#1}}
+\newcommand<>{\emphpurple}[1]{\textit#2{\color#2{amaranth}#1}}
+
+\newcommand<>{\lightblue}[1]{{\color#2{lighthublue}#1}}
+\newcommand<>{\teal}[1]{{\color#2{teal}#1}}
+\newcommand<>{\red}[1]{{\color#2{madderlake}#1}}
+\newcommand<>{\orange}[1]{{\color#2{mandarin}#1}}
+\newcommand<>{\purple}[1]{{\color#2{amaranth}#1}}
 
 \makeatletter
 \patchcmd{\beamer@sectionintoc}{\vfill}{\vskip\itemsep}{}{}
@@ -44,10 +62,11 @@
 \setbeamertemplate{itemize/enumerate body begin}{\normalsize}
 \setbeamertemplate{itemize/enumerate subbody begin}{\small}
 \setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
 \setbeamertemplate{theorems}[numbered]
 
 \setbeamercolor{alerted text}{fg=lighthublue}
-\setbeamercolor{block title example}{fg=hublue}
+\setbeamercolor{block title alerted}{fg=madderlake}
 \setbeamercolor{footline}{fg=hublue}
 \setbeamercolor{frametitle}{fg=hublue, bg=black!2}
 \setbeamercolor{normal text}{fg=hublue}
@@ -68,7 +87,7 @@
     \par
     \raggedright%
     \leftskip28pt%
-    {\usebeamerfont{title}\inserttitle}
+    {\usebeamerfont{title} tutorium \\ \vspace{5pt} \inserttitle}
     \par
     \vspace*{3pt}
     {\usebeamerfont{subtitle}\insertsubtitle}
@@ -111,15 +130,36 @@
         axis x line=bottom,
         axis y line=middle,
         tick style={draw=hublue, semithick},
-        tick align=outside,
+        tick align=center
         every axis/.append style={font=\tiny},
     },
     samples=100
 }
 
+\tikzset{
+    node distance=2cm,
+    every state/.style={
+        thick,
+        fill=lighthublue!7
+    },
+    initial text={},
+    double distance=2pt,
+    every edge/.style={
+        draw,
+        ->,
+        >=stealth,
+        auto,
+        thick,
+        text=hublue
+    }
+}
+
 % remove rules from algos while retaining the ruled layout
 \setlength{\algoheightrule}{0pt}
 \setlength{\algotitleheightrule}{0pt}
+
+\let\leq=\leqslant
+\let\geq=\geqslant
 
 \input{macros.tex}
 
@@ -156,5 +196,9 @@
     \end{frame}
     
     \input{sections/pseudocode}
-    %\input{sections/complexity}
+    \input{sections/complexity}
+    \input{sections/stacks_queues}
+    \input{sections/sorting}
+    \input{sections/search.tex}
+    %\input{sections/amortized_analysis.tex}
 \end{document}

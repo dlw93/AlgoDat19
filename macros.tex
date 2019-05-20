@@ -5,17 +5,15 @@
 \newcommand{\realpos}{\mathbb{R}_{\geq 0}}
 \newcommand{\powerset}{\mathcal{P}}
 \newcommand{\bigO}{\mathcal{O}}
+\newcommand{\derivative}[1]{\frac{\text{d}}{\text{d}#1}}
 \DeclareMathOperator{\cupdot}{\mathbin{\mathaccent\cdot\cup}}
 \DeclareMathOperator{\subsetfin}{\mathbin{\subset_{\mathsf{e}}}}
 \newcommand{\defiff}{\mathrel{\vcentcolon\Leftrightarrow}}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}
-
-% query functions
-\DeclareMathOperator{\adom}{adom}
-\DeclareMathOperator{\vars}{var}
-\DeclareMathOperator{\cons}{adom}
-\DeclareMathOperator{\free}{frei}
-\newcommand{\qfn}[1]{[\![#1]\!]}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\eval{\llbracket}{\rrbracket}
+\DeclarePairedDelimiter\alglist{\langle}{\rangle}
 
 % algorithms
 \SetKwInOut{Input}{input}
@@ -23,13 +21,19 @@
 \ResetInOut{output}
 \SetKw{True}{true}
 \SetKw{False}{false}
+\SetKw{And}{and}
+
+% text formatting
+\newcommand{\logic}[1]{\mathtt{\teal{#1}}}
 
 % theorem environments
 \theoremstyle{definition}
 \newtheorem{theorem}[algocf]{\translate{Theorem}}
 \newtheorem{lemma}[algocf]{\translate{Lemma}}
+\newtheorem{proposition}[algocf]{\translate{Proposition}}
 \newtheorem{definition}[algocf]{\translate{Definition}}
 \newtheorem{example}[algocf]{\translate{Example}}
+\newtheorem{corollary}[algocf]{\translate{Corollary}}
 \newtheorem{task}[algocf]{\translate{Task}}
 \newtheorem*{solution}{\translate{Solution}}
 \newtheorem*{remark}{Bemerkung}

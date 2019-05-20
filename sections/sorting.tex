@@ -1,0 +1,473 @@
+\section{Sortierverfahren}
+
+\begin{frame}{Grundlagen}
+\begin{block}{Listen}
+\begin{itemize}
+    \item Abstrakter Datentyp zur Repr\"asentation geordneter Sequenzen von Datenwerten
+    \item Verschiedene Implementierungen m\"oglich, bspw. als \alert{Array} oder durch \alert{Verkettung}
+\end{itemize}
+\end{block}
+
+\begin{block}{Vereinbarungen}
+Unabh\"angig von der konkreten Implementierung nehmen wir stets an, dass
+\begin{itemize}
+    \item Listen eine endliche L\"ange $n \in \nat$ haben
+    \item Elemente einer Liste durch die Positionen $1, \dots, n$ adressiert werden
+    %\item Operationen \texttt{insert}, \texttt{delete} und \texttt{elementAt} zur Verf\"ugung stehen
+\end{itemize}
+Den Zugriff auf das $i$-te Element einer Liste $L$ notieren wir mit $L_i$.
+Die Teilliste vom $i$-ten bis zum $j$-ten Element (mit $i \leq j$) bezeichnen wir mit $L[i, j]$.
+\end{block}
+\end{frame}
+
+\begin{frame}<1-3>[label=general_sort]
+\frametitle<1-3>{Allgemeine Sortierverfahren}
+\frametitle<4>{Zur Erinnerung: Allgemeine Sortierverfahren}
+\begin{definition}[Allgemeines Sortierverfahren]
+Sei $L = \alglist{a_1, \dots, a_n}$ eine Liste \"uber dem durch $\leq_D$ linear geordneten Definitionsbereich $D$.
+
+Ein \alert{\red<2>{allgemeines} Sortierverfahren} berechnet eine Liste $L' = \alglist{a_{\pi(1)}, \dots, a_{\pi(n)}}$ f\"ur eine Permutation $\pi$ von $\{ 1, \dots, n\}$, sodass
+\begin{enumerate}
+    \item $a_{\pi(i)} \leq_D a_{\pi(i+1)}$ f\"ur alle $1 \leq i < n$ und
+    \item<2-> \emphred<2>{nebst $\leq_D$ keine weiteren evtl. auf $D$ definierten Operationen genutzt werden}.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}<3->
+Obgleich wir \emph{oft} Listen \"uber den nat\"urlichen Zahlen $\nat$ betrachten, d\"urfen wir \emph{keinen} Gebrauch von Operationen wie etwa Multiplikation oder Test auf \alert{Kongruenz} machen.
+\end{remark}
+\pause
+\end{frame}
+
+\begin{frame}{\"Uberblick \"uber allgemeine Sortierverfahren}
+In der Vorlesung wurden unter anderem folgende \emph{allgemeine} Sortierverfahren vorgestellt:
+\begin{itemize}
+    \item Bubble Sort
+    \item Insertion Sort
+    \item Merge Sort
+    \item Quick Sort
+\end{itemize}
+Im Folgenden f\"uhren wir \emph{Schreibtischtests} o.g. Verfahren durch.
+\end{frame}
+
+\begin{frame}{Bubble Sort}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.4\textwidth}
+\begin{algorithm}[H]
+	\caption{Bubble Sort}
+	\label{sort:alg:bubblesort}
+	\DontPrintSemicolon
+	\Input{Liste $L$}
+    \Output{Sortierte Liste $L'$}
+	\For{$i \gets 1$ \KwTo $n$}{
+	    \For{$j \gets 1$ \KwTo $n - i$}{
+            \If{$L_j \geq L_{j+1}$}{
+                $t \gets L_j$\;
+                $L_j \gets L_{j+1}$\;
+                $L_{j+1} \gets t$\;
+            }
+        }
+    }
+    \Return{$L$}\;
+\end{algorithm}
+\end{column}
+\begin{column}{0.55\textwidth}
+\begin{task}<2->
+Ordnen Sie folgende Liste mittels des nebenstehenden Algorithmus: $$L = \alglist{17, 5, 4, 63, 46, 58, 4}$$
+\end{task}
+% \begin{solution}<3->
+
+% \end{solution}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Insertion Sort}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.4\textwidth}
+\begin{algorithm}[H]
+	\caption{Insertion Sort}
+	\label{sort:alg:insertionsort}
+	\DontPrintSemicolon
+	\Input{Liste $L$}
+    \Output{Sortierte Liste $L'$}
+	\For{$i \gets 2$ \KwTo $n$}{
+	    $key \gets L_i$\;
+	    $j \gets i - 1$\;
+	    \While{$L_j > key$ \And $j > 0$}{
+            $L_{j+1} \gets L_j$\;
+            $j \gets j - 1$\;
+        }
+    }
+    \Return{$L$}\;
+\end{algorithm}
+\end{column}
+\begin{column}{0.55\textwidth}
+\begin{task}<2->
+Ordnen Sie folgende Liste mittels des nebenstehenden Algorithmus: $$L = \alglist{17, 5, 4, 63, 46, 58, 4}$$
+\end{task}
+% \begin{solution}<3->
+
+% \end{solution}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Mergen sortierter Arrays}
+Seien $A = \alglist{a_1, \dots, a_m}$ und $B = \alglist{a_{m+1}, \dots, a_{m+n}}$ sortierte Listen der L\"ange $m$ bzw. $n$.
+Wir wollen nun eine ebenfalls sortierte Liste $L = \alglist{ a_{\pi(1)}, \dots, a_{\pi(m + n)} }$ bestimmen.
+\begin{itemize}
+    \item Das geht nat\"urlich, indem wir die Listen $A$ und $B$ zu $L' = \alglist{a_1, \dots, a_m, a_{m+1}, \dots, a_{m+n}}$ konkatenieren und $L'$ dann in $\bigO((m + n) \cdot \log(m + n))$ sortieren
+    \item Damit nutzen wir aber nicht, dass $A$ und $B$ bereits sortiert sind
+\end{itemize}
+Stattdessen durchlaufen wir beide Listen "abwechselnd" von vorn nach hinten und f\"ugen den jeweils kleineren Wert ans Ende eines neuen Arrays ein
+\begin{itemize}
+    \item Nachteil: Wir ben\"otigen $\bigO(m+n)$ zus\"atzlichen Speicherplatz
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Mergen sortierter Arrays --- Beispiel}
+\begin{example}
+Sei $A = \alglist{ 2, 3, 5, 7, 11, 12 }$ und $B = \alglist{ 4, 11, 16, 17 }$.
+
+\medskip
+
+\begin{tabular}[t]{lr}
+$A$: &
+\begin{tabular}[t]{r|L{0.4cm}|}
+    \cline{2-2} 
+    \only<1>{$\rightarrow$} & 2 \\ \cline{2-2}
+    \only<2>{$\rightarrow$} & 3 \\ \cline{2-2}
+    \only<3-4>{$\rightarrow$} & 5 \\ \cline{2-2}
+    \only<5>{$\rightarrow$} & 7 \\ \cline{2-2}
+    \only<6>{$\rightarrow$} & 11 \\ \cline{2-2}
+    \only<7-11>{$\rightarrow$} & 12 \\ \cline{2-2}
+\end{tabular}
+\end{tabular}
+\hfill
+\begin{tabular}[t]{lr}
+$B$: &
+\begin{tabular}[t]{r|L{0.4cm}|}
+    \cline{2-2} 
+    \only<1-3>{$\rightarrow$} & 4 \\ \cline{2-2}
+    \only<4-7>{$\rightarrow$} & 11 \\ \cline{2-2}
+    \only<8-9>{$\rightarrow$} & 16 \\ \cline{2-2}
+    \only<10-11>{$\rightarrow$} & 17 \\ \cline{2-2}
+\end{tabular}
+\end{tabular}
+\hfill
+\begin{tabular}[t]{lr}
+$L$: &
+\begin{tabular}[t]{r|L{0.4cm}|}
+    \cline{2-2} 
+    \only<1>{$\rightarrow$} & \only<2->{2} \\ \cline{2-2}
+    \only<2>{$\rightarrow$} & \only<3->{3} \\ \cline{2-2}
+    \only<3>{$\rightarrow$} & \only<4->{4} \\ \cline{2-2}
+    \only<4>{$\rightarrow$} & \only<5->{5} \\ \cline{2-2}
+    \only<5>{$\rightarrow$} & \only<6->{7} \\ \cline{2-2}
+    \only<6>{$\rightarrow$} & \only<7->{11} \\ \cline{2-2}
+    \only<7>{$\rightarrow$} & \only<8->{11} \\ \cline{2-2}
+    \only<8>{$\rightarrow$} & \only<9->{12} \\ \cline{2-2}
+    \only<9>{$\rightarrow$} & \only<10->{16} \\ \cline{2-2}
+    \only<10-11>{$\rightarrow$} & \only<11->{17} \\ \cline{2-2}
+\end{tabular}
+\end{tabular}
+\end{example}
+\end{frame}
+
+\begin{frame}{Mergen sortierter Arrays --- Algorithmus}
+\begin{algorithm}[H]
+	\caption{Merge}
+	\label{sort:alg:merge}
+	\DontPrintSemicolon
+	\Input{Sortierte Listen $A = \alglist{a_1, \dots, a_m}$ und $B = \alglist{a_{m+1}, \dots, a_{m+n}}$}
+    \Output{Sortierte Liste $L = \alglist{a_{\pi(1)}, \dots, a_{\pi(m+n)}}$}
+    \BlankLine
+    \begin{multicols}{2}
+    $i \gets 1, \quad j \gets m + 1, \quad k \gets 1$\;
+    \While{$i \leq m$ \And $j \leq m + n$}{
+        \If{$A_i \leq B_j$}{
+            $L_k \gets A_i, \quad i \gets i + 1$
+        }
+        \Else{
+            $L_k \gets B_j, \quad j \gets j + 1$
+        }
+        $k \gets k + 1$\;
+    }
+    \If{$i > m$}{
+        $L[k, m+n] \gets B[j, m+n]$
+    }
+    \Else{
+        $L[k, m+n] \gets A[i, m]$
+    }
+    \Return{$L$}\;
+    \end{multicols}
+\end{algorithm}
+\end{frame}
+
+\begin{frame}{Merge Sort}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.42\textwidth}
+\begin{algorithm}[H]
+	\caption{Merge Sort}
+	\label{sort:alg:mergesort}
+	\DontPrintSemicolon
+	\Input{Liste $L$}
+    \Output{Sortierte Liste $L'$}
+    \SetKwFunction{MergeSort}{MergeSort}
+    \SetKwFunction{Merge}{Merge}
+    \SetKwProg{Procedure}{procedure}{}{}
+    \Procedure{\MergeSort{$L$}}{
+        $n \gets |L|, \quad m \gets \floor{\nicefrac{n}{2}}$\;
+        \BlankLine
+        \lIf{$n \leq 1$}{
+            \Return{$L$}
+        }
+        \BlankLine
+        $L_{\ell} \gets$ \MergeSort{$L[1, m]$}\;
+        $L_r \gets$ \MergeSort{$L[m + 1, n]$}\;
+        \BlankLine
+        \Return{\Merge{$L_{\ell}$, $L_r$}}\;
+    }
+    \Return{\MergeSort{$L$}}\;
+\end{algorithm}
+\end{column}
+\begin{column}{0.53\textwidth}
+\begin{task}<2->
+Ordnen Sie folgende Liste mittels des nebenstehenden Algorithmus: $$L = \alglist{17, 5, 4, 63, 46, 58, 4}$$
+\end{task}
+% \begin{solution}<3->
+
+% \end{solution}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Partitionierung von Listen}
+\begin{definition}[Partitionierung]
+Wir nennen eine Liste $L = \alglist{a_1, \dots, a_n}$ \alert{partitioniert bzgl. $a_k$} f\"ur ein $k \in \{ 1, \dots, n \}$, falls $a_i \leq a_k$ f\"ur alle $i < k$ und $a_j \geq a_k$ f\"ur alle $j > k$:
+$$L = \alglist{\underbrace{a_1, \dots, a_{k-1}}_{\leq a_k}, a_k, \underbrace{a_{k+1}, \dots, a_n}_{\geq a_k}}$$
+\end{definition}
+
+\begin{example}<2->
+Die Liste $L = \alglist{4, 7, 3, \teal{8}, 12, 9, \red{8}, 11}$ ist partitioniert bzgl. $\teal{8}$, \emph{nicht} aber bzgl. $\red{8}$.
+\end{example}
+\end{frame}
+
+\begin{frame}{Partitionierung von Listen --- Problemstellung}
+\begin{block}{Problemstellung}
+Gegeben eine Liste $L = \alglist{a_1, \dots, a_n}$ und ein $k \in \{ 1, \dots, n \}$.
+Bestimme in Zeit $\bigO(n)$ eine Liste $L' = \alglist{a_{\pi(1)}, \dots, a_{\pi(n)}}$, die bzgl. $a_{\pi^{-1}(k)}$ partitioniert ist.
+\end{block}
+
+\begin{remark}<2->
+Da wir sp\"ater auf den Teillisten $L'[1, \pi^{-1}(k)-1]$ und $L'[\pi^{-1}(k)+1, n]$ links und rechts von Position $\pi^{-1}(k)$ rekursiv absteigen werden, ist idealerweise $\pi^{-1}(k) \approx \nicefrac{n}{2}$.
+\end{remark}
+
+\begin{block}{Frage}<3->
+Wie k\"onnen wir ein solches $k$ in Zeit h\"ochstens $\bigO(n)$ finden?
+\end{block}
+
+\begin{block}{Antwort}<4->
+Das ist gleichbedeutend damit, den \alert{Median} von $L$ in Zeit $\bigO(n)$ zu bestimmen --- das ist m\"oglich, aber nicht trivial (siehe bspw. \href{https://www.cs.hhu.de/fileadmin/redaktion/Fakultaeten/Mathematisch-Naturwissenschaftliche_Fakultaet/Informatik/Computational_Cell_Biology/AlDat/Alg2016_03.pdf}{\alert{hier}})
+
+Eine zuver\"assige \alert{Heuristik} ist es, einen ``zuf\"alligen'' Wert zu w\"ahlen --- bspw. immer $a_n$
+\end{block}
+\end{frame}
+
+\begin{frame}{Partitionierung von Listen --- Algorithmus}
+\begin{algorithm}[H]
+	\caption{Partitionierung}
+	\label{sort:alg:partition}
+	\DontPrintSemicolon
+	\SetKwFunction{Swap}{swap}
+	\SetKwRepeat{Do}{do}{while}
+	\Input{Liste $L = \alglist{a_1, \dots, a_n}$}
+    \Output{Bzgl. $a_n$ partitionierte Liste $L' = \alglist{a_{\pi(1)}, \dots, a_{\pi(n)}}$}
+    $i \gets 1, \quad j \gets n - 1$\;
+    \Do{$i < j$}{
+        \lWhile{$L_i \leq L_n$ \And $i < n$}{$i \gets i + 1$}
+        \lWhile{$L_j \geq L_n$ \And $j > 1$}{$j \gets j - 1$}
+        \lIf{$i < j$}{\Swap{$L_i$, $L_j$}}
+    }
+    \BlankLine
+    \Swap{$L_i$, $L_n$}\;
+    \BlankLine
+    \Return{$L[1, i - 1], L[i + 1, n]$}\;
+\end{algorithm}
+\end{frame}
+
+\begin{frame}{Quick Sort}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.42\textwidth}
+\begin{algorithm}[H]
+	\caption{Quick Sort}
+	\label{sort:alg:quicksort}
+	\DontPrintSemicolon
+	\Input{Liste $L$}
+    \Output{Sortierte Liste $L'$}
+    \SetKwFunction{QuickSort}{QuickSort}
+    \SetKwFunction{Merge}{Merge}
+    \SetKwProg{Procedure}{procedure}{}{}
+    \Procedure{\QuickSort{$L$}}{
+        \lIf{$|L| \leq 1$}{\Return{$L$}}
+        $L^L, L^R \gets \text{partitioniere } L \text{ bzgl. } L_n$\;
+        $L' \gets $ \QuickSort{$L^L$}\;
+        $R' \gets $ \QuickSort{$L^R$}\;
+    }
+    \Return{$\alglist{L', L_n, R'}$}\;
+\end{algorithm}
+\end{column}
+\begin{column}{0.53\textwidth}
+\begin{task}<2->
+Ordnen Sie folgende Liste mittels des nebenstehenden Algorithmus: $$L = \alglist{17, 5, 4, 63, 46, 58, 4}$$
+\end{task}
+% \begin{solution}<3->
+
+% \end{solution}
+\end{column}
+\end{columns}
+\end{frame}
+
+% \begin{frame}{Problemreduktion}
+% Problemreduktionen sind ein in der theoretischen Informatik h\"aufig genutztes Werkzeug, um per \alert{Widerspruch} zu zeigen, dass ein Problem \emph{nicht} in einer bestimmten Komplexit\"atsklasse liegt.
+
+% \begin{block}{Grundidee}<2->
+% Sei $a$ eine Eingabe f\"ur ein Problem $\mathcal{A}$ und analog $b$ eine Eingabe f\"ur ein Problem $\mathcal{B}$.
+
+% Wenn wir 
+% \begin{enumerate}
+%     \item einen Algorithmus $\mathbb{B}$ haben, der eine Eingabe $b$ f\"ur $\mathcal{B}$ verarbeiten kann (kurz: $\mathbb{B}(b)$ \emph{und} 
+%     \item einen Algorithmus $\mathbb{T}$, der eine Eingabe $a$ f\"ur $\mathcal{A}$ in eine Eingabe f\"ur $\mathcal{B}$ \alert{transformieren} kann,
+% \end{enumerate}
+% dann k\"onnen wir $b \coloneqq \mathbb{F}(a)$ als Eingabe f\"ur $\mathbb{B}$ nutzen und so 
+
+% \end{block}
+
+% \begin{example}<3->
+% Siehe Tafel!
+% \end{example}
+% \end{frame}
+
+\begin{frame}{Bemerkung zur Laufzeit}
+In der Vorlesung wurde folgendes Theorem bewiesen:
+
+\begin{theorem}\label{sort:thm:bound}
+Sei $L = \alglist{a_1, \dots, a_n}$ eine Liste mit $a_i \neq a_j$ f\"ur $1 \leq i < j \leq n$.
+Um $L$ zu sortieren, ben\"otigt jedes \emph{allgemeine Sortierverfahren} im \emph{Worst Case} $\Omega(n \, \log n)$ Vergleiche.
+\end{theorem}
+
+\begin{block}{Bedeutung}
+Das bedeutet insbesondere, dass wir f\"ur jeden der vorgestellten Algorithmen Instanzen erzeugen k\"onnen, f\"ur deren Sortierung mindestens $n \, \log n$ Vergleiche ben\"otigt werden.
+
+Das gilt aber nur, wenn wir von \emph{beliebigen} Listen als Eingabe ausgehen.
+\begin{itemize}
+    \item Andernfalls k\"onnen wir gelegentlich durch zus\"atzliche \emph{Annahmen \"uber die Beschaffenheit} der Liste die untere Schranke f\"ur \emph{beliebige} Listen unterbieten.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Sortieren spezieller Arrays}
+Gelegentlich besitzen wir zus\"atzliches Wissen \"uber die Beschaffenheit einer eingegebenen Liste $L$.
+Beispiele daf\"ur sind etwa:
+\begin{itemize}
+    \item "$L$ ist so vorsortiert, dass alle Elemente der ersten Hälfte von $L$ kleiner sind als alle Elemente der zweiten Hälfte."
+    \item "Die Länge von $L$ ist durch 10 teilbar, und jeweils 10 aufeinanderfolgende Elemente (vom Anfang beginnend) sind aufsteigend sortiert."
+\end{itemize}
+Hierbei stellen wir uns die Frage, inwiefern sich diese Eigenschaften ggf. zur Reduktion der Laufzeit f\"ur's Sortieren nutzen lassen --- etwa auf $\bigO(n)$.
+
+\begin{alertblock}{Achtung}<2->
+Die einzelnen Datenwerte d\"urfen wir aber nach wie vor \emphred{nur miteinander vergleichen}!
+\end{alertblock}
+\end{frame}
+
+% \begin{frame}{Entscheidungsprobleme}
+% \begin{definition}[Entscheidungsproblem]
+% Sei $U$ eine Menge und sei $A \subseteq U$.
+% Das Problem, für ein $x \in U$ zu \emph{entscheiden}, ob auch $x \in A$ ist, wird das \alert{Entscheidungsproblem} für $A$ genannt.
+
+% Ein Algorithmus $\mathbb{A}: U \to \{ 0, 1 \}$ \alert{entscheidet} $A$, falls $\mathbb{A}(x) = 1 \iff x \in A$.
+
+% Das Entscheidungsproblem f\"ur $A$ liegt in $\bigO(g)$ für eine Funktion $g$, falls ein Algorithmus existiert, der $A$ in Zeit $\bigO(g)$ entscheidet.
+% \end{definition}
+
+% \begin{example}<2->
+% Sei $U = \nat$ die Menge \emph{aller} nat\"urlichen Zahlen und sei $A = \{ 2 \, x : x \in U \}$ die Menge der \emph{geraden} nat\"urlichen Zahlen.
+% Die Frage, ob eine beliebige nat\"urliche Zahl $x \in U$ auch gerade ist (also ob $x \in A$), kann algorithmisch leicht in Zeit $\bigO(1)$ entschieden werden, indem wir $\ceil{\nicefrac{x}{2}} \cdot 2 \overset{?}{=} x$ auswerten und ggf. $1$ bzw. $0$ ausgeben.
+% \end{example}
+
+% \end{frame}
+
+% \begin{frame}{Problemreduktion}
+% Seien $A \subseteq U_1$ und $B \subseteq U_2$ und sei $A$ \emph{nicht} in $\bigO(g)$ entscheidbar.
+% Wir wollen zeigen, dass $B$ \emph{ebenfalls nicht} in $\bigO(g)$ entschieden werden kann.
+
+% Zwecks Erzeugung eines \alert{Widerspruchs} nehmen wir an, wir h\"atten einen Algorithmus $\mathbb{B}$, der $B$ in $\bigO(g)$ entscheidet.
+
+% Wenn wir \emph{zeigen} können, dass wir jedes $a \in U_1$ mittels eines Algorithmus $\mathbb{T}$ in Zeit $\bigO(g)$ in ein $\mathbb{T}(a) \in U_2$ \alert{transformieren} können, sodass $a \in A \iff \mathbb{T}(a) \in B$, dann entscheidet folgender Algorithmus $A$ in Zeit $\bigO(g)$:
+% \begin{align*}
+%     &b \gets \mathbb{T}(a) \\
+%     &\mathbf{return} \  \mathbb{B}(b)
+% \end{align*}
+
+% Das steht aber im Widerspruch dazu, dass $A$ \emph{nicht} in Zeit $\bigO(g)$ entschieden werden \emph{kann}.
+% \end{frame}
+
+\begin{frame}{Aufgaben zum Sortieren spezieller Arrays I}
+\begin{task}
+Sei $L$ eine Liste der L\"ange $n$ mit $L_i \leq L_{i + 2}$ f\"ur alle $1 \leq i \leq n - 2$.
+Gibt es ein \emph{allgemeines Sortierverfahren}, das $L$ in Zeit $\bigO(n)$ sortiert?
+\end{task}
+
+\begin{solution}<2->
+Betrachte die Teillisten $L' = \alglist{L_1, L_3, L_5, \dots}$ und $L'' = \alglist{L_2, L_4, L_6, \dots}$.
+Diese k\"onnen wir in Zeit $\bigO(n)$ aus $L$ bestimmen und per Voraussetzung sind sie bereits sortiert.
+Indem wir nun $L'$ und $L''$ in $\bigO(n)$ \emph{mergen}, haben wir $L$ in $\bigO(n)$ sortiert.
+\end{solution}
+\end{frame}
+
+\begin{frame}{Aufgaben zum Sortieren spezieller Arrays II}
+\begin{task}
+Sei $L$ eine Liste der L\"ange $n$ mit $L_{\floor{\nicefrac{n}{2}} + 1} = L_{\floor{\nicefrac{n}{2}} + 2} = \dots = L_n$.
+Gibt es ein \emph{allgemeines Sortierverfahren}, das $L$ in Zeit $\bigO(n)$ sortiert?
+\end{task}
+
+\begin{solution}<2->
+Angenommen, es g\"abe einen Algorithmus $\mathbb{A}$, der \emph{solche} Listen in $\bigO(n)$ sortieren kann.
+Dann k\"onnen wir in einer \alert{beliebigen} Liste $L$ der L\"ange $n$ einfach einen beliebigen Wert $a$ ans Ende anh\"angen -- und zwar $n$-mal -- und so in Zeit $\bigO(n)$ eine Liste $L'$ der L\"ange $2 \, n$ erhalten, die die Voraussetzungen von Algorithmus $\mathbb{A}$ erf\"ullt.
+
+Wir sortieren nun $L'$ mit $\mathbb{A}$ in Zeit $\bigO(n)$ und l\"oschen anschlie{\ss}end die $n$ hinzugef\"ugten Vorkommen von $a$ wieder aus der sortierten Liste.
+
+Somit haben wir $L$ in Zeit $\bigO(n)$ sortiert --- Widerspruch zu Theorem \ref{sort:thm:bound}!
+\end{solution}
+\end{frame}
+
+\againframe<4>{general_sort}
+
+\begin{frame}{Spezielle Sortierverfahren}
+H\"aufig haben wir \alert{spezielle Kenntnisse} \"uber unsere Eingabedaten
+\begin{itemize}
+    \item Das Alter von Kunden in Jahren ist in $[0, 122]$
+    \item Die K\"orpergr\"o{\ss}e von Patienten in Zentimetern ist in $[6, 272]$
+    \item \emph{Hierarchische Strings}
+    \begin{itemize}
+        \item Raumnummern an der HU wie etwa \texttt{RUD 25, 4'112}
+        \item Standorte in Bibliotheken wie etwa \texttt{ST 270 A149}
+    \end{itemize}
+    \item UNIX Nutzerrechte wie \texttt{666}
+\end{itemize}
+Wir k\"onnen hier nicht nur vergleichen, sondern auch die \alert{Struktur} der Datenpunkte ausnutzen.
+\end{frame}
+
+\begin{frame}{\"Uberblick \"uber spezielle Sortierverfahren}
+In der Vorlesung wurden folgende \emph{spezielle} Sortierverfahren vorgestellt:
+\begin{itemize}
+    \item Radix Exchange Sort
+    \item Bucket Sort
+\end{itemize}
+Im Folgenden f\"uhren wir \emph{Schreibtischtests} o.g. Verfahren durch.
+
+\medskip
+
+\textbf{Algorithmen folgen!}
+\end{frame}

@@ -1,0 +1,213 @@
+\section{Stacks \& Queues}
+
+\begin{frame}{Abstrakte Datentypen}
+\begin{block}{Grundlagen}
+\begin{itemize}
+    \item Ein \alert{abstrakter Datentyp (ADT)} beschreibt eine Menge von Operationen auf einer Menge von Werten
+    \item Wir interessieren uns nur f\"ur die \alert{Signaturen} dieser Operationen
+\end{itemize}
+\end{block}
+
+\begin{block}{Stacks \& Queues}
+\begin{itemize}
+    \item Eine \alert{Queue} (Warteschlange) ist ein ADT nach dem \alert{FIFO} (first-in, first-out) Prinzip
+    \begin{itemize}
+        \item Typische Operationen sind \texttt{enqueue} und \texttt{dequeue}
+    \end{itemize}
+    \item Ein \alert{Stack} (Stapel) ist ein ADT nach dem \alert{LIFO} (last-in, first-out) Prinzip
+    \begin{itemize}
+        \item Typische Operationen sind \texttt{push} und \texttt{pop}
+    \end{itemize}
+    \item Oft steht eine weitere Operation \texttt{head} zur Verf\"ugung, um das "n\"achste" Element zu betrachten, ohne den \alert{Zustand} der Datenstruktur zu modifizieren
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[label=logexpr_intro]{Logische Ausdr\"ucke}
+Im Folgenden f\"uhren wir \alert{Syntax} und \alert{Semantik} logischer Ausdr\"ucke ein
+\begin{itemize}
+    \item Die \alert{Syntax} beschreibt, \alert{wie} ein logischer Ausdruck aufgebaut sein muss
+    \item Die \alert{Semantik} beschreibt, \alert{was} ein logischer Ausdruck aussagt
+\end{itemize}
+
+\begin{example}<2->
+Wie wir gleich sehen werden, ist $\logic{(1 \land (1 \lor 0))}$ ein logischer Ausdruck.
+\begin{itemize}
+    \item Hierbei nehmen $\logic{1}$ und $\logic{0}$ die Rollen von "\emphteal{wahr}" und "\emphteal{falsch}" ein
+    \item Um ihn "auszurechnen", m\"ussen wir u.a. festlegen, was das Ergebnis der Operatoren $\logic{\land}$ und $\logic{\lor}$ sein soll
+    \item Intuitiv ist $\logic{(1 \land (1 \lor 0))} = \logic{(1 \land 1)} = \logic{1}$
+\end{itemize}
+\end{example}
+\end{frame}
+
+\begin{frame}{Syntax logischer Ausdr\"ucke}
+\begin{definition}\label{sq:def:logexp_syn}
+Wir definieren \emphteal{logische Ausdr\"ucke} als Worte \"uber dem Alphabet $$\Sigma = \{ \overbrace{\logic{0}, \, \logic{1}}^{\text{Ziffern}} \} \cup \{ \overbrace{\logic{\land}, \, \logic{\lor}, \, \logic{\oplus}}^{\text{Operatoren}}\} \cup \{ \overbrace{\logic{(}, \, \logic{)}}^{\text{Klammern}} \}.$$
+
+Die Menge der logischen Ausdr\"ucke $\mathcal{L} \subseteq \Sigma^{\star}$ ist rekursiv wie folgt definiert:
+\begin{itemize}
+    \item Ziffern sind logische Ausdr\"ucke, d.h. $\{ \logic{0}, \logic{1} \} \subseteq \mathcal{L}$
+    \item Falls $\teal{w_1}, \teal{w_2} \in \mathcal{L}$, so sind auch $\teal{(w_1 \land w_2)}, \teal{(w_1 \lor w_2)}, \teal{(w_1 \oplus w_2)} \in \mathcal{L}$
+\end{itemize}
+\end{definition}
+\begin{example}<2->
+Beispielsweise sind $\logic{1}$, $\logic{(0 \land 1)}$ und $\logic{(1 \land (1 \lor 0))}$ logische Ausdr\"ucke, w\"ahrend $\mathtt{\red{1 \land 1}}$ und $\mathtt{\red{(1 \land 1 \lor 0)}}$ \emph{keine} logischen Ausdr\"ucke sind.
+\end{example}
+\end{frame}
+
+\begin{frame}{\"Uberpr\"ufung logischer Ausdr\"ucke}
+\begin{task}
+Sei $w \in \Sigma^{\star}$ mit $\Sigma = \{ \mathtt{0}, \mathtt{1} \} \cup \{ \mathtt{\land}, \mathtt{\lor}, \mathtt{\oplus} \} \cup \{ \mathtt{(}, \mathtt{)} \}$.
+Entwerfen Sie einen Algorithmus, der bei Eingabe von $w$ in Zeit $\bigO(n)$ entscheidet, ob $w \in \mathcal{L}$ ist, wobei $n = |w|$ die L\"ange von $w$ in Zeichen sei.
+\end{task}
+\begin{solution}<2->
+Wir arbeiten uns entsprechend der Klammerung von $w$ durch die Eingabe und nutzen den \alert{Call Stack}, um den Kontext vor Auswertung eines Teilausdrucks zu sichern
+\begin{itemize}
+    \item Dabei gehen wir gem\"a{\ss} der Syntax logischer Ausdr\"ucke vor, verlangen also, dass entweder $w \in \{ \mathtt{0}, \mathtt{1} \}$ oder $w = (w_1 \star w_2)$ mit $w_1, w_2 \in \mathcal{L}$ und $\star \in \{ \land, \lor, \oplus \}$
+\end{itemize}
+Beachte, dass wir $w$ dabei \emph{nicht} auswerten.
+\end{solution}
+\end{frame}
+
+\begin{frame}{Algorithmus}
+\begin{algorithm}[H]
+	\caption{\"Uberpr\"ufung logischer Ausdr\"ucke}
+	\label{sq:alg:check}
+	\DontPrintSemicolon
+    \SetKwFunction{check}{isExpression}
+    \SetKwFunction{fsm}{fsm}
+    \SetKwProg{Procedure}{procedure}{}{}
+    \begin{multicols}{2}
+    \Input{$w = w_1w_2\dots w_n \in \Sigma^{\star}$}
+    \Output{$w \in \mathcal{L}$?}
+    \BlankLine
+    \Procedure{\check{$k$}}{
+        \lIf{$w_k \in \{ \logic{0}, \logic{1} \}$}{
+            \Return{$k$}
+        }
+        \lElseIf{$w_k = \logic{(}$}{
+            \Return{\fsm{$k$}}
+        }
+        \lElse{\Return{$\bot$}}
+    }
+    \BlankLine
+    \Return{\check{$1$} $= n$}\;
+    \Procedure{\fsm{$k$}}{
+        $s \gets 0$\;
+        \For{$i \gets k + 1$ \KwTo $n$}{
+            $\ell \gets$ \check{$i$}\;
+            \If{$s \in \{ 0, 2\}$ \And $\ell > 0$}{
+                $s \gets s + 1, \quad i \gets \ell$\;
+            }
+            \ElseIf{$s = 1$ \And $w_i \in \{ \logic{\land}, \logic{\lor}, \logic{\oplus} \}$}{
+                $s \gets s + 1$\;
+            }
+            \ElseIf{$s = 3$ \And $w_i = \logic{)}$}{
+                \Return{$i$}\;
+            }
+            \lElse{\Return{$\bot$}}
+        }
+    }
+    \end{multicols}
+\end{algorithm}
+\end{frame}
+
+% \begin{frame}{Analyse}
+% \end{frame}
+
+\begin{frame}{Alternativer Ansatz I}
+\begin{block}{Grundlagen}
+Wir k\"onnen die Sprache aller logischen Ausdr\"ucke $\mathcal{L}$ leicht durch Angabe einer \alert{kontextfreien Grammatik} spezifizieren
+\begin{itemize}
+    \item Dementsprechend k\"onnen wir einen \alert{Kellerautomaten} (PDA) angeben, der f\"ur Worte $w \in \Sigma^{\star}$ entscheidet, ob $w \in \mathcal{L}$
+    \begin{itemize}
+        \item Zu Details siehe Vorlesung \emph{Einf\"uhrung in die Theoretische Informatik}
+    \end{itemize}
+\end{itemize}
+\end{block}
+
+\begin{block}{Idee}<2->
+Wir simulieren den Lauf eines PDA algorithmisch
+\begin{itemize}
+    \item Um einen PDA zu simulieren, ben\"otigen wir einen \alert{Stack}
+    \item Die \alert{\"Uberf\"uhrungsfunktion} implementieren wir durch eine \alert{Lookup-Tabelle}
+\end{itemize}
+
+Nun k\"onnen wir jedes Zeichen der Eingabe in Zeit $\bigO(1)$ verarbeiten --- insgesamt $\bigO(n)$
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Alternativer Ansatz II}
+\begin{example}
+{
+\newcommand{\transition}[3]{\logic{#1}\purple{#2}{\color{hublue},}\,\purple{#3}}
+\newcommand{\hash}{\text{\#}}
+Folgender PDA $M = (Z, \teal{\Sigma}, \purple{\Gamma}, \delta, q_0, \purple{\text{\#}})$ mit $Z=\{q_0, q_1, q_2, q_3, q_4\}$ und $\purple{\Gamma = \{ \text{\#}, L, R \}}$ erkennt genau die logischen Ausdr\"ucke gem\"a{\ss} Definition \ref{sq:def:logexp_syn}:
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[node distance=2.2cm, every loop/.style={looseness=5, out=115, in=65}]
+    \node[state, initial] (q0) {$q_0$};
+    \node[state, right of=q0] (q1) {$q_1$};
+    \node[state, right of=q1] (q2) {$q_2$};
+    \node[state, right of=q2] (q3) {$q_3$};
+    \node[state, right of=q3] (q4) {$q_4$};
+    \draw   (q0) edge[loop above] node[align=center]{$\transition{0}{\hash}{\epsilon}$ \\ $\transition{1}{\hash}{\epsilon}$} (q0)
+            (q0) edge[above] node{$\transition{(}{\hash}{L}$} (q1)
+            (q1) edge[loop above] node{$\transition{(}{L}{LL}$} (q1)
+            (q1) edge[above] node[align=center]{$\logic{0}$ \\ $\logic{1}$} (q2)
+            (q2) edge[above] node[align=center]{$\transition{\land}{L}{R}$ \\ $\transition{\lor}{L}{R}$ \\ $\transition{\oplus}{L}{R}$} (q3)
+            (q3) edge[bend left, above] node[align=center]{$\logic{0}$ \\ $\logic{1}$} (q4)
+            (q3) edge[bend left, below] node{$\transition{(}{R}{RL}$} (q1)
+            (q4) edge[bend left, below] node[align=center]{$\transition{\land}{L}{R}$ \\ $\transition{\lor}{L}{R}$ \\ $\transition{\oplus}{L}{R}$} (q3)
+            (q4) edge[loop above] node{$\transition{)}{R}{\epsilon}$} (q4);
+\end{tikzpicture}
+\caption{Ein PDA $M$ mit $L(M) = \mathcal{L}$}
+\label{sq:img:pda}
+\end{figure}
+}
+\end{example}
+\end{frame}
+
+\againframe<3->{logexpr_intro}
+
+\begin{frame}{Semantik logischer Ausdr\"ucke}
+\begin{definition}
+Wir definieren den \emph{Wert} $\llbracket \teal{w} \rrbracket$ logischer Ausdr\"ucke $\teal{w} \in \mathcal{L}$ rekursiv wie folgt:
+\begin{itemize}
+    \item $\eval{\logic{0}} = \logic{0}$ und $\eval{\logic{1}} = \logic{1}$
+    \item F\"ur logische Ausdr\"ucke $\teal{w_1}, \teal{w_2}$ ist
+    \begin{itemize}
+        \item $\eval{\teal{(w_1 \land w_2)}} = \eval{\teal{w_1}} \cdot \eval{\teal{w_2}}$
+        \item $\eval{\teal{(w_1 \lor w_2)}} = \begin{cases}\logic{1}, & \text{falls } \eval{\teal{w_1}} + \eval{\teal{w_2}} \geq 1 \\ \logic{0}, & \text{sonst.}\end{cases}$
+        \item $\eval{\teal{(w_1 \oplus w_2)}} = \begin{cases}\logic{1}, & \text{falls } \eval{\teal{w_1}} \neq \eval{\teal{w_2}} \\ \logic{0}, & \text{sonst.}\end{cases}$
+    \end{itemize}
+\end{itemize}
+\end{definition}
+\begin{example}<2->\label{sq:ex:sem}
+Sei $\logic{((0 \lor 1) \land (1 \land 0))}$ gegeben.
+Wir erhalten $\eval{
+\logic{(}
+\underbrace{\logic{(0 \lor 1)}}_{\eval{\logic{(0 \lor 1)}} = \logic{1}}
+\logic{\land}
+\underbrace{\logic{(1 \land 0)}}_{\eval{\logic{(1 \land 0)}} = \logic{0}}
+\logic{)}
+} = \logic{0}$.
+\end{example}
+\end{frame}
+
+\begin{frame}{Auswertung logischer Ausdr\"ucke}
+\begin{task}
+Entwerfen Sie einen Algorithmus, der einen logischen Ausdruck $\teal{w} \in \mathcal{L}$ auswertet, also $\eval{\teal{w}}$ bestimmt.
+Die Laufzeit soll in $\bigO(n)$ liegen, wobei $n = |\teal{w}|$ die L\"ange des logischen Ausdrucks in Zeichen sei.
+
+Nebst einer konstanten Anzahl zus\"atzlicher Variablen primitiven Datentyps d\"urfen Sie eine Queue oder einen Stack benutzen.
+\end{task}
+\begin{solution}<2->
+\begin{quote}
+    Idee: Wir werten \teal{w} wie in Beispiel \ref{sq:ex:sem} ``von innen nach au{\ss}en'' aus und merken uns Zwischenergebnisse in einem \alert{Stack}.
+\end{quote}
+
+Details folgen!
+\end{solution}
+\end{frame}

@@ -1,0 +1,25 @@
+\section{Suchverfahren}
+
+\begin{frame}{Grundlagen}
+\begin{block}{Problemstellung}
+Gegeben eine \alert{sortierte} Liste $L = \alglist{a_1, \dots, a_n}$ \"uber einem Wertebereich $D$ und ein beliebiges Element $a \in D$.
+
+Wir wollen die Frage beantworten, ob ein $i \in \{ 1, \dots, n \}$ mit $a_i = a$ existiert.
+\end{block}
+\begin{block}{Ansatz}<2->
+Wir sprechen \"uber \alert{sortierte} Listen, k\"onnen also die \alert{Transitivit\"at} der $\leq_D$-Relation nutzen.
+
+Das bedeutet, dass wir nach Vergleich eines Listenelements $a_i \neq a$ nur noch die Teilliste $L[1, i-1]$ bzw. $L[i+1, n]$ betrachten m\"ussen:
+$$L = \alglist{\underbrace{a_1, \dots, a_{i-1}}_{\leq a_i}, a_i, \underbrace{a_{i+1}, \dots, a_n}_{\geq a_i}}$$
+\end{block}
+\end{frame}
+
+\begin{frame}{Suchverfahren}
+In der Vorlesung wurden folgende Suchverfahren vorgestellt:
+\begin{itemize}
+    \item Binary Search
+    \item Fibonacci Search
+    \item Interpolation Search
+\end{itemize}
+Im Folgenden führen wir Schreibtischtests o.g. Verfahren durch.
+\end{frame}

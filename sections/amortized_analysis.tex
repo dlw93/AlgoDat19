@@ -1,0 +1,86 @@
+\section{Amortisierte Analyse}
+
+\begin{frame}{Amortisation in der Wirtschaft}
+\resizebox{!}{.8\textheight}{%
+\begin{tikzpicture}
+\begin{axis}[
+    tikzDefaults,
+    smooth,
+	area style,
+    xmin=1,
+    xmax=19,
+    ticks=none,
+    axis x line=middle,
+    set layers={background, main}
+]
+    \addplot+[draw=mandarin, fill=mandarin, fill opacity=0.2] coordinates {
+        (1, 289)
+        (2, 330)
+        (3, 361)
+        (4, 393)
+        (5, 425)
+        (6, 462)
+        (7, 62)
+        (8, 80)
+        (9, 107)
+        (10, 141)
+        (11, 177)
+        (12, 226)
+        (13, 279)
+        (14, 345)
+        (15, 422)
+        (16, 512)
+        (17, 607)
+        (18, 718)
+    }
+    \closedcycle;
+    \addplot+[draw=teal, fill=teal, fill opacity=0.2] coordinates {
+        (1, 128)
+        (2, 129)
+        (3, 126)
+        (4, 127)
+        (5, 122)
+        (6, 127)
+        (7, 135)
+        (8, 143)
+        (9, 148)
+        (10, 151)
+        (11, 165)
+        (12, 169)
+        (13, 174)
+        (14, 182)
+        (15, 196)
+        (16, 204)
+        (17, 219)
+        (18, 222)
+    }
+    \closedcycle;
+    \addplot+[draw=madderlake, fill=madderlake, fill opacity=0.2] coordinates {
+        (1, -89)
+        (2, -88)
+        (3, -95)
+        (4, -95)
+        (5, -90)
+        (6, -90)
+        (7, -105)
+        (8, -105)
+        (9, -104)
+        (10, -106)
+        (11, -108)
+        (12, -109)
+        (13, -102)
+        (14, -100)
+        (15, -102)
+        (16, -106)
+        (17, -106)
+        (18, -105)
+    }
+    \closedcycle;
+\end{axis}
+\end{tikzpicture}
+}
+\end{frame}
+
+\begin{frame}{Selbstorganisierende Listen}
+
+\end{frame}
