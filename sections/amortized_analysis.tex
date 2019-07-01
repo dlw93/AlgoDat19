@@ -1,86 +1,244 @@
 \section{Amortisierte Analyse}
 
-\begin{frame}{Amortisation in der Wirtschaft}
-\resizebox{!}{.8\textheight}{%
-\begin{tikzpicture}
-\begin{axis}[
-    tikzDefaults,
-    smooth,
-	area style,
-    xmin=1,
-    xmax=19,
-    ticks=none,
-    axis x line=middle,
-    set layers={background, main}
-]
-    \addplot+[draw=mandarin, fill=mandarin, fill opacity=0.2] coordinates {
-        (1, 289)
-        (2, 330)
-        (3, 361)
-        (4, 393)
-        (5, 425)
-        (6, 462)
-        (7, 62)
-        (8, 80)
-        (9, 107)
-        (10, 141)
-        (11, 177)
-        (12, 226)
-        (13, 279)
-        (14, 345)
-        (15, 422)
-        (16, 512)
-        (17, 607)
-        (18, 718)
-    }
-    \closedcycle;
-    \addplot+[draw=teal, fill=teal, fill opacity=0.2] coordinates {
-        (1, 128)
-        (2, 129)
-        (3, 126)
-        (4, 127)
-        (5, 122)
-        (6, 127)
-        (7, 135)
-        (8, 143)
-        (9, 148)
-        (10, 151)
-        (11, 165)
-        (12, 169)
-        (13, 174)
-        (14, 182)
-        (15, 196)
-        (16, 204)
-        (17, 219)
-        (18, 222)
-    }
-    \closedcycle;
-    \addplot+[draw=madderlake, fill=madderlake, fill opacity=0.2] coordinates {
-        (1, -89)
-        (2, -88)
-        (3, -95)
-        (4, -95)
-        (5, -90)
-        (6, -90)
-        (7, -105)
-        (8, -105)
-        (9, -104)
-        (10, -106)
-        (11, -108)
-        (12, -109)
-        (13, -102)
-        (14, -100)
-        (15, -102)
-        (16, -106)
-        (17, -106)
-        (18, -105)
-    }
-    \closedcycle;
-\end{axis}
-\end{tikzpicture}
-}
+\begin{frame}{Arrays}
+\begin{definition}[Array]
+Ein \alert{Array} $A = [ a_1, \dots, a_n ]$ der L\"ange $n$ repr\"asentiert eine Liste $L = \alglist{b_1, \dots, b_m}$ mit $m \leq n$, falls $a_i = b_i$ f\"ur $1 \leq i \leq m$ und $a_{m+1} = \dots = a_n = \square$.
+
+Wir schreiben $\abs{A} \coloneqq \abs{L} = m$, um die Anzahl der \alert{belegten Slots} zu bezeichnen und $\norm{A} \coloneqq n$, um die \alert{Gesamtgr\"o{\ss}e} des Arrays zu bezeichnen.
+Weiter sei $\nicefrac{\abs{A}}{\norm{A}}$ der \alert{F\"ullgrad}.
+\end{definition}
+
+\begin{example}
+Sei $L = \alglist{\purple{8, 5, 12, 7, 9}}$, also $\abs{L} = 5$.
+Das Array $A = [ \underbrace{\underbrace{\purple{8, 5, 12, 7, 9}}_{\abs{A} = 5}, \square, \square, \square}_{\norm{A} = 8} ]$ repr\"asentiert $L$.
+\end{example}
+
+\begin{remark}
+Wir nehmen in der Regel an, dass $\norm{A} = 2^k$ f\"ur ein $k \in \nat$ ist.
+\end{remark}
 \end{frame}
 
-\begin{frame}{Selbstorganisierende Listen}
+\begin{frame}{Dynamische Arrays}
+Ein \alert{dynamisches Array} repr\"asentiert eine Liste, an deren Ende "unbegrenzt" eingef\"ugt werden kann.
+Gleichsam k\"onnen Elemente vom Ende wieder gel\"oscht werden.
 
+Diese Operationen nennen wir im Folgenden \texttt{INS} f\"ur \alert{Einf\"ugung} und \texttt{DEL} f\"ur \alert{L\"oschung}.
+
+Die Grundidee ist hierbei, \alert{nach Größenänderungen} stets einen \alert{F\"ullgrad} von $\geq \nicefrac{1}{2}$ sicherzustellen.
+\begin{itemize}
+    \item Das tun wir, indem wir bei Einf\"ugung des $(\norm{A}+1)$-ten Elements den verf\"ugbaren Speicherplatz \alert{verdoppeln}, 
+    \item und bei L\"oschung des $\nicefrac{\norm{A}}{\red{4}}$-ten Elements den verf\"ugbaren Speicherplatz \alert{halbieren}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Operationen auf Dynamischen Arrays}
+\begin{block}{Zu \texttt{INS}}
+Sei $A = [ a_1, \dots, a_n ]$ ein Array, an dessen Ende wir ein neues Element $b$ \alert{einf\"ugen} wollen.
+\begin{itemize}
+    \item Falls $\abs{A} = \norm{A}$: Alloziere ein neues Array $A' = [ \underbrace{a_1, \dots, a_n}_{=A}, b, \underbrace{\square, \dots, \square}_{(n-1)\text{-mal}} ]$ mit \red{$\norm{A'} = 2\, n$}.
+    \item Sonst f\"uge $b$ einfach in den n\"achsten freien Slot ein.
+\end{itemize}
+\end{block}
+
+\begin{block}{Zu \texttt{DEL}}
+Nun wollen wir das Element $a_m$ (mit $m = \abs{A}$) vom Ende von $A$ \alert{l\"oschen}.
+\begin{itemize}
+    \item Falls $\abs{A} = \red{\nicefrac{\norm{A}}{4}}$: Alloziere ein neues Array $A' = [ \underbrace{a_1, \dots, a_{m-1}}_{(\nicefrac{n}{4} - 1)\text{-mal}}, \underbrace{\square, \dots, \square}_{(\nicefrac{n}{4} + 1)\text{-mal}} ]$ mit \red{$\norm{A'} = \nicefrac{n}{2}$}.
+    \item Sonst l\"osche einfach $a_m$.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Analyse der Operationen auf Dynamischen Arrays}
+\begin{block}{Analyse}
+Eine \texttt{INS}-Operation kostet im Worst-Case $\bigO(n)$, da s\"amtliche $n-1$ Elemente verschoben und erst dann die Einf\"ugung get\"atigt werden kann.
+
+Analog gilt f\"ur die \texttt{DEL}-Operation, dass das Verschieben von $\nicefrac{n}{4}-1$ Elementen in $\bigO(n)$ ist.
+\end{block}
+
+\begin{remark}
+Folglich kostet eine Sequenz $n$ direkt aufeinanderfolgender \texttt{INS}-Operationen $\bigO(n^2)$.
+\end{remark}
+
+\begin{block}{Problem}
+Wir betrachten die Worst-Case Lauzeit \alert{jeder einzelnen Operation} --- diese Sichtweise ist hier \alert{zu pessimistisch}.
+\end{block}
+
+\begin{block}{L\"osung}
+Betrachte stattdessen \alert{Sequenzen von Operationen} und deren Gesamtlaufzeit.
+\end{block}
+\end{frame}
+
+\begin{frame}{Dynamische Arrays --- Beispiel}
+\begin{example}
+Betrachte die Sequenz von Operationen $o_1, \dots, o_n$ mit $o_1 = \dots = o_n = \text{\texttt{INS}}$.
+
+\begin{columns}[T]
+\begin{column}{0.8\textwidth}
+\setlength{\leftskip}{1em}
+\only<2->{
+In nebenstehender "Verteilung" der Laufzeiten f\"allt auf, dass \emphred{$o_i$} genau dann \emphred{nicht konstant} ist, wenn \emphorange<2>{$i-1$} eine \emphorange<2>{Zweierpotenz} ist.
+}
+
+\medskip
+
+\only<3->{
+Seien $c_1, \dots, c_n$ die \alert{tats\"achlichen Kosten} der $i$-ten Operation, wobei 
+$$c_i = \begin{cases} \red{i} & \red{\text{falls } i-1 \text{ eine Zweierpotenz ist}} \\ \teal{1} & \text{\teal{sonst}.}  \end{cases}$$
+}
+
+\only<4->{
+Dann belaufen sich die \alert{Gesamtkosten} aller $n$ Operationen auf
+$${\displaystyle
+\sum_{i=1}^n c_i 
+\leq \teal{n} + \red{\sum_{i=0}^{\floor{\log n}} 2^i} 
+\leq \teal{n} + \red{\sum_{i=0}^{\floor{\log n}} \frac{n}{2^i}}
+\leq \teal{n} + \red{2 \, n} = 3 \, n
+}.$$
+}
+\end{column}
+\begin{column}<2->{0.2\textwidth}
+\centering
+\begin{tabular}{cc}
+    $\mathbf{i}$ & \textbf{Laufzeit} \\
+    \orange<2>{\teal<3->{1}} & \teal<3->{$\bigO(1)$} \\
+    \red<2->{2} & \red<2->{$\bigO(i)$} \\
+    \red<2->{3} & \red<2->{$\bigO(i)$} \\
+    \orange<2>{\teal<3->{4}} & \teal<3->{$\bigO(1)$} \\
+    \red<2->{5} & \red<2->{$\bigO(i)$} \\
+    \teal<3->{6} & \teal<3->{$\bigO(1)$} \\
+    \teal<3->{7} & \teal<3->{$\bigO(1)$} \\
+    \orange<2>{\teal<3->{8}} & \teal<3->{$\bigO(1)$} \\
+    \red<2->{9} & \red<2->{$\bigO(i)$} \\
+    $\vdots$ & $\vdots$
+\end{tabular}
+\end{column}
+\end{columns}
+\end{example}
+\end{frame}
+
+\begin{frame}{Dynamische Arrays --- Zwischenstand}
+\begin{block}{Ergebnis}
+Wir haben gezeigt, dass jede Sequenz von $n$ Einf\"ugungen insgesamt $\leq 3 \, n$ Instruktionen ben\"otigt --- jede einzelne Einf\"ugung ben\"otigt also \alert{amortisiert} $3$ Instruktionen.
+\end{block}
+
+\begin{block}{Intuition}
+Die amortisierten Kosten je Einf\"ugung in H\"ohe von $3$ kann man wie folgt veranschaulichen:
+\begin{itemize}
+    \item Wir nutzen eine Einheit, um \alert{das neue Element selbst einzuf\"ugen}
+    \item Eine weitere Einheit nutzen wir, um f\"ur \alert{dessen sp\"atere Verschiebung} zu zahlen
+    \item Schlie{\ss}lich ben\"otigen wir eine Einheit, um f\"ur's Verschieben von Elementen zu zahlen, die sich bereits \alert{vor der letzten Vergr\"o{\ss}erung} in der Liste befanden
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{\"Uberblick}
+Zur Analyse der Gesamtlaufzeit einer \alert{Sequenz von Operationen} stehen folgende Verfahren zur Verf\"ugung:
+\begin{itemize}
+    \item Aggregationsmethode
+    \item Account-Methode
+    \item Potentialmethode
+\end{itemize}
+Da diese paarweise \alert{\"aquivalent} zueinander sind, k\"onnen wir schlicht das zum jeweiligen Problem passende Verfahren w\"ahlen.
+
+\begin{quote}
+    Der Grundgedanke ist stets, dass sich der zus\"atzliche Aufwand der \alert{teureren}, aber daf\"ur \alert{selteneren} Operationen auf die \"ubrigen Operationen \alert{verteilt}.
+\end{quote}
+
+Im Folgenden betrachten wir stellvertretend die \alert{Potentialmethode}.
+\end{frame}
+
+\begin{frame}{Die Potentialmethode}
+\begin{definition}[Potentialmethode]
+Sei $D$ eine Datenstruktur und $o_1, \dots, o_m$ eine Sequenz von Operationen auf $D$.
+Weiterhin sei $D_0 \coloneqq D$ und $D_i \coloneqq o_i(D_{i-1})$ f\"ur $1 \leq i \leq m$ der \alert{Zustand} von $D$ \emph{nach} Anwendung der $i$-ten Operation $o_i$.
+
+\begin{itemize}
+    \item Eine \alert{Potentialfunktion} $\Phi$ weist jedem Zustand $D_i$ ein \alert{Potential} $\Phi(D_i) \in \realpos$ zu.
+    \item Die \alert{amortisierten Kosten} der $i$-ten Operation sind $\hat{c_i} \coloneqq c_i + \Phi(D_i) - \Phi(D_{i-1})$, wobei $c_i$ die \alert{tats\"achlichen Kosten} sind.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+Der Einfachheit halber werden wir meist annehmen, dass $\Phi(D_0) = 0$ ist.
+\end{remark}
+
+\begin{theorem}\label{arm:thm:equiv}
+\vspace*{-6pt}
+Falls eine Potentialfunktion $\Phi$ mit $\Phi(D_n) \geq \Phi(D_0)$ existiert, so ist $\sum_{i=1}^n \hat{c_i} \geq \sum_{i=1}^n c_i$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Amortisierte vs. Tats\"achliche Kosten}
+\begin{proof}[Beweis von Theorem \ref{arm:thm:equiv}]
+Es ist leicht zu zeigen, dass die Summe der amortisieren Kosten eine \alert{\red<2->{obere Schranke} f\"ur die tats\"achlichen Kosten} der Sequenz darstellt:
+\begin{align*}
+    \red<2->{\sum_{i=1}^n \hat{c_i}} &= \sum_{i=1}^n (c_i + \Phi(D_i) - \Phi(D_{i-1})) \\
+    &= \sum_{i=1}^n c_i + \underbrace{\sum_{i=1}^n (\Phi(D_i) - \Phi(D_{i-1}))}_{\text{Teleskopsumme}} \\
+    &= \sum_{i=1}^n c_i + \underbrace{\Phi(D_n) - \Phi(D_0)}_{\geq 0} \red<2->{\geq \sum_{i=1}^n c_i}
+\end{align*}
+\end{proof}
+\end{frame}
+
+\begin{frame}{Amortisierte Analyse Dynamischer Arrays \, I}
+\begin{theorem}
+Jede Sequenz von $n$ \texttt{INS}-Operationen auf einem dynamischen Array $A$ ist in $\bigO(n)$.
+\end{theorem}
+\begin{block}{Beweis.}
+Wir nutzen zum Beweis die Potentialmethode.
+Sei hierf\"ur $\Phi(A_i) \coloneqq 2 \cdot \abs{A} - \norm{A}$.
+Insbesondere gilt somit f\"ur ein \emph{volles} Array (d.h. $\abs{A} = \norm{A}$), dass $\Phi(A_i) = 2 \cdot \norm{A} - \norm{A} = \norm{A}$.
+
+F\"ur die Ermittlung der amortisierten Kosten unterscheiden wir zwei F\"alle.
+\begin{itemize}
+    \item Das Array enth\"alt noch einen freien Slot
+    \item Das Array ist voll und wir m\"ussen zun\"achst ein neues Array allozieren
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Amortisierte Analyse Dynamischer Arrays \, II}
+\begin{block}{Fall 1: $\abs{A_{i-1}} < \norm{A_{i-1}}$}
+Das Array enth\"alt also noch einen freien Slot f\"ur das neue Element, sodass sich die Gr\"o{\ss}e von $A$ \emph{nicht} ver\"andert, d.h. $\norm{A_i} = \norm{A_{i-1}}$.
+
+Einzig die Anzahl der belegten Slots erh\"oht sich um eins, d.h. $\abs{A_i} = \abs{A_{i-1}} + 1$.
+Folglich belaufen sich die amortisierten Kosten der $i$-ten Operation f\"ur diesen Fall auf:
+\begin{align*}
+    \hat{c_i} &= c_i + \Phi(A_i) - \Phi(A_{i-1}) \\
+    &= c_i + (2 \cdot \underbrace{\abs{A_i}}_{= \abs{A_{i-1}} + 1} - \underbrace{\norm{A_i}}_{=\norm{A_{i-1}}}) - (2 \cdot \abs{A_{i-1}} - \norm{A_{i-1}}) \\
+    &= c_i + 2 \cdot \abs{A_{i-1}} + 2 - \norm{A_{i-1}} - 2 \cdot \abs{A_{i-1}} + \norm{A_{i-1}} \\
+    &= \underbrace{c_i}_{=1} + 2 \\
+    &= 3
+\end{align*}
+\end{block}
+\end{frame}
+
+\begin{frame}{Amortisierte Analyse Dynamischer Arrays \, III}
+\begin{block}{Fall 2: $\abs{A_{i-1}} = \norm{A_{i-1}}$}
+Wir m\"ussen also zun\"achst ein neues Array der Gr\"o{\ss}e $2 \cdot \norm{A_{i-1}}$ allozieren und die bisherigen $\norm{A_{i-1}}$ Elemente verschieben.
+
+Die Anzahl der belegten Slots erh\"oht sich wiederum um eins, d.h. $\abs{A_i} = \abs{A_{i-1}} + 1$.
+Insgesamt belaufen sich die amortisierten Kosten der $i$-ten Operation f\"ur diesen Fall auf:
+\begin{align*}
+    \hat{c_i} &= c_i + \Phi(A_i) - \Phi(A_{i-1}) \\
+    &= c_i + (2 \cdot \underbrace{\abs{A_i}}_{= \abs{A_{i-1}} + 1} - \underbrace{\norm{A_i}}_{=2\cdot \norm{A_{i-1}}}) - (2 \cdot \abs{A_{i-1}} - \norm{A_{i-1}}) \\
+    &= c_i + 2 \cdot \abs{A_{i-1}} + 2 - 2 \cdot \norm{A_{i-1}} - 2 \cdot \abs{A_{i-1}} + \norm{A_{i-1}} \\
+    &= \underbrace{c_i}_{=\norm{A_{i-1}} + 1} + 2 - \norm{A_{i-1}} \\
+    &= 3
+\end{align*}
+\end{block}
+\end{frame}
+
+\begin{frame}{Amortisierte Analyse Dynamischer Arrays \, IV}
+Die \emph{tats\"achlichen} Kosten f\"ur alle $n$ Operationen liegen gem\"a{\ss} Theorem \ref{arm:thm:equiv} also bei $\leq 3 \, n \in \bigO(n)$.
+Dies beendet den Beweis. \qed
+
+\begin{remark}
+Auf \"ahnliche Weise kann gezeigt werden, dass die Aussage auch dann noch gilt, wenn man auch \texttt{DEL}-Operationen zul\"asst.
+Details dazu finden sich bspw. in Kapitel 17.4.2 von
+
+\begin{quote}
+    Cormen, Leiserson, Rivest, Stein: Introduction to Algorithms, 2nd Edition, MIT Press
+\end{quote}
+\end{remark}
 \end{frame}

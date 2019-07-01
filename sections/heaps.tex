@@ -1,0 +1,147 @@
+\section{Heaps}
+
+\begin{frame}{Priorit\"atswarteschlangen}
+\begin{block}<+->{Grundidee}
+Wir wollen schnell auf das aktuell h\"ochstpriorisierte Element einer \alert{ver\"anderlichen} Liste zugreifen k\"onnen.
+
+Genauer gesagt soll die gesuchte Datenstruktur folgende Operationen unterst\"utzen:
+\begin{itemize}
+    \item \alert{Finden} und \alert{Entfernen} des aktuell h\"ochstpriorisierten Elements
+    \item \alert{Einf\"ugen} neuer Elemente
+\end{itemize}
+\end{block}
+
+\begin{block}<+->{Problem}
+F\"ur sortierte/unsortierte Arrays/Linked-Lists ist stets mindestens eine der gew\"unschten Operationen in $\red{\bigO(n)}$.
+\end{block}
+
+\begin{block}<+->{L\"osung}
+Wir organisieren unsere Daten in einem \alert{Baum}, den wir durch ein \alert{Array} repr\"asentieren.
+\end{block}
+\end{frame}
+
+\begin{frame}{Heaps}
+\begin{definition}\label{heaps:def:heap}\vspace*{-6pt}
+Ein \alert{Heap} ist ein \emph{beinahe vollst\"andiger Bin\"arbaum} $T = (V, E, r)$ mit Beschriftungsfunktion $\pi: V \to \nat$, f\"ur den gilt:
+\begin{quote}
+    Ist $\purple<2->{v} \in V$ ein innerer Knoten mit Kindern $\teal<2->{v_{\ell}}, \red<2->{v_r}$, so ist $\pi(\purple<2->{v}) \leq \pi(\teal<2->{v_{\ell}})$ und $\pi(\purple<2->{v}) \leq \pi(\red<2->{v_r})$.
+\end{quote}
+\end{definition}
+
+\begin{block}<2->{Skizze zu Definition \ref{heaps:def:heap}}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \node[amaranth, fill=amaranth!7] (A) at (0,0) {4};
+    \node[tealblue, fill=tealblue!7] (B) at (-1,-1) {7};
+    \node[madderlake, fill=madderlake!7] (C) at (1,-1) {5};
+    
+    \node[draw=none] (D) at (-0.6,0.6) {};
+    \node[draw=none] (E) at (-1.6,-1.6) {};
+    \node[draw=none] (F) at (-0.4,-1.6) {};
+    \node[draw=none] (G) at (0.4,-1.6) {};
+    \node[draw=none] (H) at (1.6,-1.6) {};
+    
+    \path (A) edge (B);
+    \path (A) edge (C);
+    \path (A) edge (D);
+    \path (B) edge (E);
+    \path (B) edge (F);
+    \path (C) edge (G);
+    \path (C) edge (H);
+\end{tikzpicture}
+\end{block}
+\end{frame}
+
+\begin{frame}{Operationen auf Heaps}
+Im Folgenden betrachten wir Operationen zum Erstellen und Verwalten von Heaps:
+\begin{itemize}
+    \item \lightblue{\textsc{BottomUpSiftDown}} zum Aufbau einer Heap-Struktur
+    \item \lightblue{\textsc{Add}} zum Einf\"ugen eines neuen Elements
+    \item \lightblue{\textsc{ExtractMin}} zum Entfernen des minimalen Elements
+\end{itemize}
+
+\begin{remark}<2->
+S\"amtliche o.g. Operationen lassen sich durch Anpassung einiger Vergleiche leicht auf sog. Max-Heaps \"ubertragen.
+\end{remark}
+\end{frame}
+
+% \begin{frame}{Prequel: Die Heapify Operation}
+% \begin{columns}[T]
+% \begin{column}{0.4\textwidth}
+% \begin{algorithm}[H]
+% 	\caption{Heapify}
+% 	\label{heap:alg:extractmin}
+% 	\DontPrintSemicolon
+% 	\Input{Dynamisches Array $A$}
+%     \Output{Minimales Element aus $A$}
+% 	$min \gets A_1$\;
+% 	Vertausche $A_1$ und $A_n$\;
+% 	L\"osche $A_n$\;
+% 	\textsc{Heapify($A$)}\;
+%     \Return{$min$}\;
+% \end{algorithm}
+% \end{column}
+% \begin{column}{0.55\textwidth}
+
+% \end{column}
+% \end{columns}
+% \end{frame}
+
+% \begin{frame}{Entfernen des minimalen Elements}
+% \begin{columns}[T]
+% \begin{column}{0.4\textwidth}
+% \begin{algorithm}[H]
+% 	\caption{ExtractMin}
+% 	\label{heap:alg:extractmin}
+% 	\DontPrintSemicolon
+% 	\Input{Dynamisches Array $A$}
+%     \Output{Minimales Element aus $A$}
+% 	$min \gets A_1$\;
+% 	Vertausche $A_1$ und $A_n$\;
+% 	L\"osche $A_n$\;
+% 	\textsc{Heapify($A$)}\;
+%     \Return{$min$}\;
+% \end{algorithm}
+% \end{column}
+% \begin{column}{0.55\textwidth}
+% Wir vertauschen also die Wurzel mit dem letzten Blatt, stellen anschlie{\ss}end die Heap-Eigenschaft wieder her und geben den Wert der vormaligen Wurzel zur\"uck.
+
+% \medskip
+
+% Die Laufzeit liegt somit offensichtlich \alert{amortisiert} in $\bigO(\log n)$.
+% \begin{itemize}
+%     \item Amortisiert deshalb, weil das L\"oschen des letzten Elements aus einem \emph{dynamischen} Array im Worst-Case $\bigO(n)$ kostet
+% \end{itemize}
+% \end{column}
+% \end{columns}
+% \end{frame}
+
+% \begin{frame}{Einf\"ugen eines neuen Elements}
+% \begin{columns}[T]
+% \begin{column}{0.4\textwidth}
+% \begin{algorithm}[H]
+% 	\caption{Add}
+% 	\label{heap:alg:add}
+% 	\DontPrintSemicolon
+% 	\Input{Dynamisches Array $A$,\\Neuer Wert $a$}
+%     \Output{Dynamisches Array $A'$}
+%     $A_{n+1} \gets a$\;
+%     $c \gets n + 1, \quad p \gets \floor{\nicefrac{c}{2}}$\;
+%     \While{$p > 0$ \And $A_c < A_p$}{
+%         Vertausche $A_c$ und $A_p$\;
+%         $c \gets p, \quad p \gets \floor{\nicefrac{c}{2}}$\;
+%     }
+% \end{algorithm}
+% \end{column}
+% \begin{column}{0.55\textwidth}
+% Wir machen also praktisch "BubbleSort" auf dem \emph{eindeutigen} Pfad von dem neu eingef\"ugten Blatt mit Wert $a$ und der Wurzel.
+
+% \medskip
+
+% Da heapgeordnete Arrays beinahe vollst\"andig sind, ist die L\"ange dieses Pfades in $\bigO(\log n)$ und somit auch die Laufzeit des Algorithmus'.
+% \end{column}
+% \end{columns}
+% \end{frame}
+
+% \begin{frame}{Aufbau einer Heap-Struktur}
+    
+% \end{frame}

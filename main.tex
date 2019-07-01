@@ -3,13 +3,7 @@
 \usepackage[ngerman]{babel}
 \usepackage{amssymb, mathtools, cancel, pgfplots, nicefrac, stmaryrd}
 \usepackage[ruled, linesnumbered, vlined, ngerman, algosection]{algorithm2e}
-\usepackage{array, csquotes, hyperref, tasks, multicol}
-
-\MakeOuterQuote{"}
-
-\newcolumntype{L}[1]{>{\raggedleft\arraybackslash}p{#1}}
-
-\usetikzlibrary{automata, positioning, arrows, patterns, fillbetween}
+\usepackage{array, csquotes, hyperref, tasks, multicol, wrapfig}
 
 \title[Algorithmen und Datenstrukturen]{Algorithmen und Datenstrukturen}
 \subtitle{Sommersemester 2019}
@@ -17,6 +11,16 @@
 \institute{Wissensmanagement in der Bioinformatik\\Institut für Informatik\\Humboldt-Universität zu Berlin}
 \date{}
 \titlegraphic{\includegraphics[width=70pt, height=70pt]{images/husiegel_bw.eps}}
+
+\MakeOuterQuote{"}
+
+\newcolumntype{L}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+\usetikzlibrary{automata, graphs, positioning, arrows, patterns, fillbetween}
+
+\tikzset{onslide/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{#2}}
+}}
 
 \setsansfont[Path = fonts/, UprightFont = *-Regular, BoldFont = *-Medium, ItalicFont = *-Italic]{FiraSans}
 
@@ -93,7 +97,7 @@
     {\usebeamerfont{subtitle}\insertsubtitle}
     \vspace*{-5pt}
     \vfill
-    \tikz[remember picture, overlay] \node[anchor=center] at (0.8\paperwidth,0) {\inserttitlegraphic};
+    \tikz[remember picture, overlay] \node[anchor=center, draw=none] at (0.8\paperwidth,0) {\inserttitlegraphic};
 \end{beamercolorbox}
 \vspace*{2pt}
 {\usebeamerfont{author}\beamer@shortauthor}
@@ -142,6 +146,11 @@
         thick,
         fill=lighthublue!7
     },
+    every node/.style={
+        draw,
+        thick,
+        circle
+    },
     initial text={},
     double distance=2pt,
     every edge/.style={
@@ -150,7 +159,8 @@
         >=stealth,
         auto,
         thick,
-        text=hublue
+        text=hublue,
+        every node/.style={circle, fill=none, midway} %anchor=center
     }
 }
 
@@ -169,11 +179,8 @@
     \begin{frame}{Organisatorisches}
     \begin{block}{Zeit \& Ort}
         \begin{itemize}
-            \item Mittwoch (RUD 25, 4.112) und Donnerstag (RUD 25, 4.113) von 13 bis 15 Uhr
+            \item Mittwoch von 15 bis 17 Uhr in RUD 25, 4.112
             \item Teilnahme ist \alert{freiwillig} und \alert{flexibel}
-            \begin{itemize}
-                \item Ihr könnt stets an \alert{einem}, \alert{beiden} oder \alert{keinem} der Termine erscheinen
-            \end{itemize}
         \end{itemize}
     \end{block}
     
@@ -200,5 +207,7 @@
     \input{sections/stacks_queues}
     \input{sections/sorting}
     \input{sections/search.tex}
-    %\input{sections/amortized_analysis.tex}
+    \input{sections/amortized_analysis.tex}
+    \input{sections/heaps.tex}
+    \input{sections/trees.tex}
 \end{document}

@@ -21,5 +21,123 @@ In der Vorlesung wurden folgende Suchverfahren vorgestellt:
     \item Fibonacci Search
     \item Interpolation Search
 \end{itemize}
-Im Folgenden führen wir Schreibtischtests o.g. Verfahren durch.
+Die Verfahren unterscheiden sich im Wesentlichen durch das \alert{Kriterium}, nach dem das n\"achste zu vergleichende Element der Liste gew\"ahlt wird.
+\begin{itemize}
+    \item Ansonsten wird stets wie zuvor beschrieben die Transitivit\"at ausgenutzt
+\end{itemize}
+
+Im Folgenden führen wir \emph{Schreibtischtests} o.g. Verfahren durch.
+\end{frame}
+
+\begin{frame}{Binary Search}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.42\textwidth}
+\begin{algorithm}[H]
+	\caption{Binary Search}
+	\label{search:alg:binsearch}
+	\DontPrintSemicolon
+	\Input{Sortierte Liste $L$ \"uber $D$, \\ Element $a \in D$}
+    \Output{Ist $a \in L$?}
+    $\ell \gets 1, \quad r \gets n$\;
+    \While{$\ell \leq r$}{
+        $m \gets \ell + \floor{\frac{r-\ell}{2}}$\;
+        \lIf{$a < L_m$}{$r \gets m - 1$}
+        \lElseIf{$a > L_m$}{$\ell \gets m + 1$}
+        \lElse{\Return{\True}}
+    }
+    \Return{\False}
+\end{algorithm}
+\end{column}
+\begin{column}{0.53\textwidth}
+\begin{task}<2->
+Sei $L = \alglist{4, 4, 5, 17, 46, 58, 63}$.
+Suchen Sie folgende Elemente in $L$ mittels des nebenstehenden Algorithmus:
+\begin{tasks}
+    \task $46$
+    \task $3$
+\end{tasks}
+Geben Sie f\"ur jeden Durchlauf die Werte von $\ell$, $r$ und $m$ an!
+\end{task}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Interpolation Search}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.45\textwidth}
+\begin{algorithm}[H]
+	\caption{Interpolation Search}
+	\label{search:alg:intsearch}
+	\DontPrintSemicolon
+	\Input{Sortierte Liste $L$ \"uber $D$, \\ Element $a \in D$}
+    \Output{Ist $a \in L$?}
+    $\ell \gets 1, \quad r \gets n$\;
+    \While{$\ell \leq r$}{
+        \only<1-2>{$m \gets \ell + \floor{(r - \ell) \cdot \red<2->{\frac{a - L_{\ell}}{L_r - L_{\ell}}}}$\;}
+        \only<3->{
+        \lIf{$L_r = L_{\ell}$}{$m \gets \ell$}
+        \lElse{$m \gets \ell + \floor{(r - \ell) \cdot \frac{a - L_{\ell}}{L_r - L_{\ell}}}$}
+        \BlankLine
+        }
+        \lIf{$a < L_m$}{$r \gets m - 1$}
+        \lElseIf{$a > L_m$}{$\ell \gets m + 1$}
+        \lElse{\Return{\True}}
+    }
+    \Return{\False}
+\end{algorithm}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{task}<3->
+Sei $L = \alglist{4, 4, 5, 17, 46, 58, 63}$.
+Suchen Sie folgende Elemente in $L$ mittels des nebenstehenden Algorithmus:
+\begin{tasks}
+    \task $46$
+    \task $3$
+\end{tasks}
+Geben Sie f\"ur jeden Durchlauf die Werte von $\ell$, $r$ und $m$ an!
+\end{task}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Fibonacci-Zahlen}
+\begin{definition}[Fibonacci-Zahlen]
+Die Folge der \alert{Fibonacci-Zahlen} $(F_k)_{k \in \natpos}$ ist induktiv wie folgt definiert:
+$$F_1 = 1, \quad F_2 = 1, \quad F_k = F_{k-2} + F_{k-1} \text{ f\"ur alle } k > 2.$$
+\end{definition}
+
+\begin{remark}
+In den \"Ubungsaufgaben wird zudem gezeigt, dass $F_k \geq \nicefrac{1}{3} \cdot F_{k+2}$ f\"ur alle $k \geq 1$ gilt.
+\end{remark}
+\end{frame}
+
+\begin{frame}{Fibonacci Search}
+\scriptsize
+\begin{algorithm}[H]
+	\caption{Fibonacci Search}
+	\label{search:alg:fibsearch}
+	\DontPrintSemicolon
+	\Input{Sortierte Liste $L$ \"uber $D$, Element $a \in D$}
+    \Output{Ist $a \in L$?}
+    $i \gets \min \{ k \in \natpos : F_k > n \}$\;
+    $fib_3 \gets F_{i-3}, \quad fib_2 \gets F_{i-2}, \quad m \gets fib_2$\;
+    \While{\True}{
+        \If{$a < L_m$}{
+            \lIf{$fib_2 = 1$}{\Return{\False}}
+            \Else{
+                $m \gets m - fib_3$\;
+                $fib_2 \gets fib_2 - fib_3, \quad fib_3 \gets fib_3 - fib_2$\:
+            }
+        }
+        \ElseIf{$a > L_m$}{
+            \lIf{$fib_3 = 0$}{\Return{\False}}
+            \Else{
+                $m \gets m + fib_3$\;
+                $t \gets fib_3, \quad fib_3 \gets fib_2 - fib_3, \quad fib_2 \gets t$\;
+            }
+        }
+        \lElse{\Return{\True}}
+    }
+    \Return{\False}
+\end{algorithm}
 \end{frame}

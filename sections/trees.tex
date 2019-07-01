@@ -1,0 +1,481 @@
+\section{B\"aume}
+
+\begin{frame}<1-4>[label=graph]
+\frametitle<1-4>{Graphen}
+\frametitle<5>{Zur Erinnerung: Graphen}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\begin{definition}[Graph]
+\only<+->{
+Ein \alert{(ungerichteter) Graph} ist ein Paar $G = (\red<1>{V}, \orange<1>{E})$ mit einer Menge von \alert{\emphred<1>{Knoten}} $\red<1>{V}$ und einer Menge von \alert{\emphorange<1>{Kanten}} $\orange<1>{E} \subseteq \{ \{v, w \} \subseteq \red<1>{V} : v \neq w \}$.
+}
+
+\only<+->{
+Ein \alert{\emphred<2>{Pfad}} der L\"ange $k$ ist eine Folge \emph{paarweise verschiedener} Knoten $\red<2>{v_0, \dots, v_k} \in V$ mit $\orange<2>{\{ v_i, v_{i+1} \}} \in E$ f\"ur $0 \leq i < k$.
+}
+
+\only<+->{
+Ist $v_1, \dots, v_k$ ein Pfad und ist $\purple<3>{\{ v_k, v_1 \}} \in E$, so nennen wir die Folge \emphred<3>{$v_1, \dots, v_k, v_1$} einen \alert{\emphred<3>{Kreis}} der L\"ange $k$.
+}
+
+\only<+->{
+Ein Graph ist \alert{zusammenh\"angend}, falls f\"ur alle $(v, w) \in V \times V$ gilt, dass es einen Pfad $v_1, \dots, v_k$ mit $v_1 = v$ und $v_k = w$ gibt.
+}
+\end{definition}
+\end{column}
+\begin{column}{0.35\textwidth}
+\vspace{0.8cm}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \tikzstyle{highlightred}=[madderlake, fill=madderlake!7]
+    \tikzstyle{highlightorange}=[mandarin, fill=mandarin!7]
+
+    \node[onslide={<1-3>{highlightred}}] (A) at (0,0) {A};
+    \node[onslide={<1-3>{highlightred}}] (B) at (0.5,2) {B};
+    \node[onslide={<1>{highlightred}}] (C) at (2,2.5) {C};
+    \node[onslide={<1-3>{highlightred}}] (D) at (1.7,-0.2) {D};
+    \node[onslide={<1>{highlightred}}] (E) at (2,-2) {E};
+    \node[onslide={<1-3>{highlightred}}] (F) at (3,1.3) {F} ;
+    
+    \path[onslide={<1-3>{highlightorange}}] (A) edge (B);
+    \path[onslide={<1>{highlightorange}}] (B) edge (C);
+    \path[onslide={<1-3>{highlightorange}}] (A) edge (D);
+    \path[onslide={<1>{highlightorange}}] (D) edge (C);
+    \path[onslide={<1>{highlightorange}}] (A) edge (E);
+    \path[onslide={<1>{highlightorange}}] (D) edge (E);
+    \path[onslide={<1-3>{highlightorange}}] (D) edge (F);
+    \path[onslide={<1>{highlightorange}}] (C) edge (F);
+    \path[onslide={<1>{highlightorange}}] (C) edge (A); 
+    \path[onslide={<1>{highlightorange}}] (E) edge (F);
+    \only<3>{\path[amaranth, dashed] (F) edge (B);}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\pause
+\end{frame}
+
+\begin{frame}<1-3>[label=diameter]
+\frametitle<1-3>{Der Durchmesser eines Graphen}
+\frametitle<4>{Zur Erinnerung: Der Durchmesser eines Graphen}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\begin{definition}<+->[Durchmesser]
+Der \emphorange<1>{Durchmesser} eines Graphen $G$ entspricht der L\"ange des \emph{l\"angsten} \emphorange<1>{Pfades} in $G$.
+\end{definition}
+
+\medskip
+
+\only<+->{
+\begin{quote}
+    Dieser Parameter ist beispielsweise bei der Analyse von Netzwerken von gro{\ss}er Bedeutung.
+\end{quote}
+}
+
+\begin{theorem}<+->
+Im Allgemeinen liegt die Laufzeit der Berechnung des Durchmessers einen Graphen $G = (V, E)$ mit $n \coloneqq \abs{V}$ in $\bigO(n^3)$.
+\end{theorem}
+\end{column}
+\begin{column}{0.35\textwidth}
+\vspace{0.8cm}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \tikzstyle{highlightred}=[madderlake, fill=madderlake!7]
+    \tikzstyle{highlightorange}=[mandarin, fill=mandarin!7]
+
+    \node[onslide={<1>{highlightred}}] (A) at (0,0) {A};
+    \node[onslide={<1>{highlightred}}] (B) at (0.5,2) {B};
+    \node[onslide={<1>{highlightred}}] (C) at (2,2.5) {C};
+    \node[onslide={<1>{highlightred}}] (D) at (1.7,-0.2) {D};
+    \node[onslide={<1>{highlightred}}] (E) at (2,-2) {E};
+    \node[onslide={<1>{highlightred}}] (F) at (3,1.3) {F} ;
+    
+    \path[onslide={<1>{highlightorange}}] (A) edge (B);
+    \path[onslide={<1>{highlightorange}}] (B) edge (C);
+    \path[] (A) edge (D);
+    \path[onslide={<1>{highlightorange}}] (D) edge (C);
+    \path[] (A) edge (E);
+    \path[onslide={<1>{highlightorange}}] (D) edge (E);
+    \path[] (D) edge (F);
+    \path[] (C) edge (F);
+    \path[] (C) edge (A); 
+    \path[onslide={<1>{highlightorange}}] (E) edge (F);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\pause
+\end{frame}
+
+\begin{frame}{Graph Traversierung}
+In der Vorlesung wurden folgende Traversierungsstrategien vorgestellt:
+
+\begin{columns}[T]
+\begin{column}<1->{0.45\textwidth}
+\begin{algorithm}[H]
+	\caption{Breitensuche (BFS)}
+	\label{trees:alg:bfs}
+	\SetKwFunction{Enqueue}{\emphred<3>{enqueue}}
+	\SetKwFunction{Dequeue}{\emphred<3>{dequeue}}
+	\SetKwFunction{Visit}{visit}
+	\DontPrintSemicolon
+	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
+    $visited \gets \emptyset$\;
+    $frontier \gets \{ p \}$\;
+    \While{$frontier \neq \emptyset$}{
+        $v \gets $ \Dequeue{$frontier$}\;
+        \If{$v \not \in visited$}{
+            \Visit{$v$}\;
+            $visited \gets visited \cup \{ v \}$\;
+            \ForEach{$\{ v, w \} \in E$}{
+                \Enqueue{$frontier$, $w$}\;
+            }
+        }
+    }
+\end{algorithm}
+\end{column}
+\begin{column}<2->{0.45\textwidth}
+\begin{algorithm}[H]
+	\caption{Tiefensuche (DFS)}
+	\label{trees:alg:dfs}
+	\SetKwFunction{Push}{\emphred<3>{push}}
+	\SetKwFunction{Pop}{\emphred<3>{pop}}
+	\SetKwFunction{Visit}{visit}
+	\DontPrintSemicolon
+	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
+    $visited \gets \emptyset$\;
+    $frontier \gets \{ p \}$\;
+    \While{$frontier \neq \emptyset$}{
+        $v \gets $ \Pop{$frontier$}\;
+        \If{$v \not \in visited$}{
+            \Visit{$v$}\;
+            $visited \gets visited \cup \{ v \}$\;
+            \ForEach{$\{ v, w \} \in E$}{
+                \Push{$frontier$, $w$}\;
+            }
+        }
+    }
+\end{algorithm}
+\end{column}
+\end{columns}
+\end{frame}
+
+\againframe<5>{graph}
+
+\begin{frame}{B\"aume}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\begin{definition}[Baum]
+\only<1->{Ein \alert{Baum} ist ein \emph{zusammenh\"angender}, \emph{kreisfreier} Graph.}
+\only<2->{Ein \alert{gewurzelter Baum} ist ein Tripel $T = (\red<2>{V}, \orange<2>{E}, \purple<2>{r})$ mit \alert{Wurzel} $\purple<2>{r} \in \red<2>{V}$, wobei $(\red<2>{V}, \orange<2>{E})$ ein Baum ist.}
+
+\only<3->{Die \alert{Tiefe} $d(\red<3>{v})$ eines Knotens $\red<3>{v} \in V$ in $T$ ist die L\"ange des (eindeutigen) \emphorange<3>{Pfades} von $\red<3>{v}$ zur Wurzel $\purple<3>{r}$.}
+
+\only<4->{In einer Kante $\orange<4>{\{ v, w \}} \in E$ mit $d(\teal<4>{w}) = d(\red<4>{v}) + 1$ nennen wir $\teal<4>{w}$ ein \alert{Kind} von $\red<4>{v}$ bzw. $\red<4>{v}$ \emph{den} \alert{Elter} von $\teal<4>{w}$.}
+
+\only<5->{Knoten ohne Kinder sind \alert{\emphteal<5>{Bl\"atter}}, alle anderen sind \alert{\emphred<5>{innere Knoten}}.}
+\end{definition}
+\end{column}
+\begin{column}{0.35\textwidth}
+\vspace{0.8cm}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \tikzstyle{highlightred}=[madderlake, fill=madderlake!7]
+    \tikzstyle{highlightteal}=[tealblue, fill=tealblue!7]
+    \tikzstyle{highlightorange}=[mandarin]
+    \tikzstyle{highlightpurple}=[amaranth, fill=amaranth!7]
+
+    \node[onslide={<2,3>{highlightpurple}}, onslide={<5>{highlightred}}] (A) at (0,0) {A};
+    \node[onslide={<2>{highlightred}}, onslide={<5>{highlightteal}}] (B) at (0.5,2) {B};
+    \node[onslide={<2, 4, 5>{highlightred}}] (C) at (2,2.5) {C};
+    \node[onslide={<2, 5>{highlightred}}] (D) at (1.7,-0.2) {D};
+    \node[onslide={<2, 3, 5>{highlightred}}] (E) at (2,-2) {E};
+    \node[onslide={<2>{highlightred}}, onslide={<4, 5>{highlightteal}}] (F) at (3,1.3) {F};
+    \node[onslide={<2>{highlightred}}, onslide={<5>{highlightteal}}] (G) at (3.2,-1.2) {G};
+    
+    \path[onslide={<2>{highlightorange}}] (A) edge (B);
+    \path[onslide={<2, 3>{highlightorange}}] (A) edge (D);
+    \path[onslide={<2, 3>{highlightorange}}] (D) edge (E);
+    \path[onslide={<2, 4>{highlightorange}}] (C) edge (F);
+    \path[onslide={<2>{highlightorange}}] (C) edge (A);
+    \path[onslide={<2>{highlightorange}}] (E) edge (G); 
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\againframe<4>{diameter}
+
+\begin{frame}{Jetzt: Bestimmung des Durchmessers eines Baumes}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+In einen Baum $T = (V, E)$ können wir die \alert{Kreisfreiheit} ausnutzen, denn diese impliziert, dass
+\begin{enumerate}
+    \item je zwei Knoten stets durch einen \emph{eindeutigen} Pfad miteinander verbunden sind, und
+    \item $\abs{E} = \abs{V} - 1$.
+\end{enumerate}
+
+\medskip
+
+Den Durchmesser kann man nun mittels zweier \alert{Breitensuchen} bestimmen --- deren Laufzeit liegt f\"ur B\"aume n\"amlich in $\bigO(n)$ f\"ur $n \coloneqq \abs{V}$.
+
+\medskip
+
+Im Folgenden stellen wir zun\"achst den Algorithmus im Detail vor und beweisen anschlie{\ss}end seine Korrektheit sowie die Laufzeitschranke von $\bigO(n)$.
+\end{column}
+\begin{column}{0.35\textwidth}
+\vspace{0.8cm}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \node[] (A) at (0,0) {A};
+    \node[] (B) at (0.5,2) {B};
+    \node[] (C) at (2,2.5) {C};
+    \node[] (D) at (1.7,-0.2) {D};
+    \node[] (E) at (2,-2) {E};
+    \node[] (F) at (3,1.3) {F};
+    \node[] (G) at (3.2,-1.2) {G};
+    
+    \path[] (A) edge (B);
+    \path[] (A) edge (D);
+    \path[] (D) edge (E);
+    \path[] (C) edge (F);
+    \path[] (C) edge (A);
+    \path[] (E) edge (G); 
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Algorithmus zur Bestimmung des Durchmessers eines Baumes}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\vspace{-6pt}
+\begin{algorithm}[H]
+	\caption{Durchmesser eines Baumes}
+	\label{trees:alg:diameter}
+	\SetKwFunction{BFS}{BFS}
+	\DontPrintSemicolon
+	\Input{Baum $T = (V, E)$}
+    \Output{Durchmesser von $T$}
+    W\"ahle einen beliebigen Knoten $s \in V$\;
+	Starte \BFS{$T$, $s$}\;
+	Sei $t$ der \emph{zuletzt} entdeckte Knoten\;
+	\BlankLine
+    Starte \BFS{$T$, $t$}\;
+	Sei $u$ der \emph{zuletzt} entdeckte Knoten\;
+	\BlankLine
+    \Return{L\"ange des Pfades von $t$ nach $u$}
+\end{algorithm}
+\end{column}
+\begin{column}{0.47\textwidth}
+\vspace{-6pt}
+\begin{remark}<2->
+Der durch eine Breitensuche \emph{zuletzt} entdeckte Knoten muss zu den am \emph{weitesten} vom Ausgangsknoten entfernten Knoten geh\"oren.
+\end{remark}
+
+\begin{remark}<3->
+Aufgrund der Kreisfreiheit von $T$ muss \emph{der} Pfad von $t$ nach $u$ eindeutig sein.
+\end{remark}
+
+\begin{theorem}<4->
+\label{trees:thm:diameter}
+\vspace*{-7pt}
+\algref{trees:alg:diameter} ermittelt den Durchmesser eines Baumes in Zeit $\bigO(n)$ f\"ur $n = \abs{V}$.
+\end{theorem}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Beweis von \thmref{trees:thm:diameter}}
+\begin{block}<+->{Laufzeit}
+Die Laufzeit von Algorithmus \ref{trees:alg:diameter} ist klar, da zum einen f\"ur alle B\"aume $T = (V, E)$ mit $n \coloneqq \abs{V}$ und $m \coloneqq \abs{E}$ gilt, dass $m = n - 1$ ist.
+Zudem wissen wir, dass Breitensuche im Allgemeinen in $\bigO(m)$ liegt --- f\"ur B\"aume also sogar in $\bigO(n)$.
+\end{block}
+
+\begin{block}<+->{Korrektheit}
+F\"ur den Beweis der Korrektheit sei $T = (V, E)$ ein Baum und bezeichne $\delta(v, w)$ die L\"ange des (eindeutigen) Pfades von $v$ nach $w$ f\"ur alle $v, w \in V$.
+
+\begin{lemma}<+->
+\label{trees:lem:dist}
+\vspace*{-7pt}
+Sei $P = a, \dots, b$ ein l\"angster Pfad in $T$ ($\delta(a, b)$ entspricht also gerade dem Durchmesser von $T$) und o.B.d.A. der \emph{einzige} solche Pfad.
+Weiterhin sei $s \in V$ beliebig gew\"ahlt.
+
+Bei einer von $s$ ausgehenden Breitensuche ist entweder $a$ oder $b$ der zuletzt entdeckte Knoten.
+\end{lemma}
+\end{block}
+\end{frame}
+
+\begin{frame}{Beweis von \lemref{trees:lem:dist} \, I}
+Wir beweisen per Widerspruch.
+Wir nehmen also an, es existierte ein Knoten $x \in V \setminus \{ a, b \}$, der weiter von $s$ entfernt ist, als $a$ und $b$ es sind.
+Formal ausgedr\"uckt bedeutete das
+\begin{align}\label{trees:eq:ineq}
+    \delta(s, a) < \delta(s, x) && \text{und} && \delta(s, b) < \delta(s, x).
+\end{align}
+
+Sei nun $c$ derjenige Knoten auf dem Pfad $P = a, \dots, b$, der durch die von $s$ ausgehende Breitensuche zuerst entdeckt wird.
+Das ist zugleich der Knoten auf $p_1$, der $s$ am n\"achsten ist.
+
+Durch Einsetzen der ersten Ungleichung aus \eqref{trees:eq:ineq} erhalten wir
+\begin{align}\label{trees:eq:f1}
+    \underbrace{\delta(s, a)}_{< \delta(s, x)} + \delta(s, b) < \delta(s, x) + \delta(s, b).
+\end{align}
+\end{frame}
+
+\begin{frame}{Beweis von \lemref{trees:lem:dist} \, II}
+Da die Pfade von $s$ nach $a$ und $s$ nach $b$ beide \"uber $c$ f\"uhren, haben sie den Teilpfad von $s$ bis $c$ gemeinsam, bevor sie in unterschiedliche "Richtungen" (gen $a$ bzw. $b$) abzweigen:
+\begin{align}\label{trees:eq:eq}
+    \delta(s, a) = \delta(s, c) + \delta(c, a) && \text{und} && \delta(s, b) = \delta(s, c) + \delta(c, b).
+\end{align}
+W\"urden die Gleichungen in \eqref{trees:eq:eq} nicht gelten, m\"usste ein alternativer Pfad von $s$ nach $a$ bzw. $b$ existieren, was die Existenz eines, in B\"aumen per Definition ausgeschlossenen, Kreises bedeuten w\"urde.
+
+Wir erhalten also zus\"atzlich zu der Ungleichung in \eqref{trees:eq:f1} auch folgende Gleichung:
+\begin{align}
+\begin{split}\label{trees:eq:f2}
+    \delta(s, a) + \delta(s, b) &\overset{\eqref{trees:eq:eq}}{=} \delta(s, c) + \delta(c, a) + \delta(s, c) + \delta(c, b)\\
+    &= \delta(a, b) + 2 \cdot \delta(s, c).
+\end{split}
+\end{align}
+Zusammen ergeben die Formeln \eqref{trees:eq:f1} und \eqref{trees:eq:f2}
+\begin{align}\label{trees:eq:f3}
+    \delta(a, b) + 2 \cdot \delta(s, c) < \delta(s, x) + \delta(s, b).
+\end{align}
+\end{frame}
+
+\begin{frame}{Beweis von \lemref{trees:lem:dist} \, III}
+Weiterhin muss gem\"a{\ss} der \emph{Dreiecksungleichung} gelten, dass
+\begin{align}\label{trees:eq:f4}
+    \delta(x, b) = \delta(s, x) + \delta(s, b).
+\end{align}
+Andernfalls m\"usste $\delta(x, b) < \delta(s, x) + \delta(s, b)$ sein, was aufgrund der Kreisfreiheit wiederum ausgeschlossen ist.
+
+Aus den Formeln \eqref{trees:eq:f3} und \eqref{trees:eq:f4} und der offensichtlichen Tatsache, dass $\delta(a, b) < \delta(a, b) + 2 \cdot \delta(s, c)$, erhalten wir
+\begin{align}
+    \delta(a, b) < \delta(a, b) + 2 \cdot \delta(s, c) < \delta(x, b)
+\end{align}
+
+Per Voraussetzung sollte aber $P = a, \dots, b$ der \emph{l\"angste} Pfad sein, und nicht $P' = x, \dots, b$ --- Widerspruch! \qed
+\end{frame}
+
+\begin{frame}{Abschluss des Beweises von \thmref{trees:thm:diameter}}
+Aus \lemref{trees:lem:dist} wissen wir bereits, dass wir durch eine Breitensuche, ausgehend von einem beliebigen Knoten $s$, zuletzt einen Endpunkt $t \in \{ a, b \}$ eines l\"angsten Pfades $P = a, \dots, b$ in $T$ finden.
+
+O.B.d.A. sei $t = a$.
+Dann ist klar, dass f\"ur den, bei einer von $t$ ausgehenden Breitensuche zuletzt gefundenen Knoten $u$ gelten muss, dass $u = b$, da dieser am weitesten von $a$ entfernt ist.
+
+Somit entspricht die L\"ange des durch \algref{trees:alg:diameter} gefundenen Pfades tats\"achlich dem Durchmesser von $T$.
+
+Dies schlie{\ss}t den Beweis der Korrektheit von \algref{trees:alg:diameter} und somit auch von \thmref{trees:thm:diameter} ab. \qed
+\end{frame}
+
+\begin{frame}{Weitere Eigenschaften von B\"aumen}
+\begin{columns}[T]
+\begin{column}{0.6\textwidth}
+\begin{definition}
+\only<1->{Sei $T = (\red<1>{V}, \orange<1>{E}, \purple<1>{r})$ ein gewurzelter Baum.}
+
+\only<2->{Die \alert{Tiefe} von $T$ ist $\orange<2>{d}(T) \coloneqq \max_{\teal<2>{v} \in V}\orange<2>{d(\teal<2>{v})}$.}
+
+\only<3->{Sei $\teal<3>{N^+}(\red<3>{v}) \coloneqq \{ \teal<3>{w} \in V : \orange<3>{\{ v, w \}} \in E, d(\teal<3>{w}) = d(\red<3>{v}) + 1 \}$ die Menge aller \emphteal<3>{Kinder} eines Knotens $\red<3>{v} \in V$.
+Dann ergibt sich die \alert{Ordnung} von $T$ zu $\Delta^+ \coloneqq \max_{\red<3>{v} \in V} \abs{\teal<3>{N^+}(\red<3>{v})}$.}
+
+\only<4->{$T$ ist \alert{vollst\"andig}, falls alle Knoten $v \in V$ mit $d(v) < d$ \emph{genau $\Delta^+$} Kinder haben.}
+
+\only<5->{Gewurzelte B\"aume der Ordnung 2 nennen wir \alert{Bin\"arb\"aume}.}
+\end{definition}
+\end{column}
+\begin{column}{0.35\textwidth}
+\vspace{0.8cm}
+\begin{tikzpicture}[every edge/.append style={draw, -}]
+    \tikzstyle{highlightred}=[madderlake, fill=madderlake!7]
+    \tikzstyle{highlightteal}=[tealblue, fill=tealblue!7]
+    \tikzstyle{highlightorange}=[mandarin]
+    \tikzstyle{highlightpurple}=[amaranth, fill=amaranth!7]
+    \tikzstyle{transparentblue}=[hublue!30, fill=none]
+
+    \node[onslide={<1, 2>{highlightpurple}}, onslide={<3>{highlightred}}] (A) at (0,0) {A};
+    \node[onslide={<1>{highlightred}}, onslide={<3>{highlightteal}}, onslide={<5>{transparentblue}}] (B) at (0.5,2) {B};
+    \node[onslide={<1>{highlightred}}, onslide={<3>{highlightteal}}] (C) at (2,2.5) {C};
+    \node[onslide={<1, 2>{highlightred}}, onslide={<3>{highlightteal}}] (D) at (1.7,-0.2) {D};
+    \node[onslide={<1, 2>{highlightred}}] (E) at (2,-2) {E};
+    \node[onslide={<1>{highlightred}}] (F) at (3,1.3) {F};
+    \node[onslide={<1>{highlightred}}, onslide={<2>{highlightteal}}] (G) at (3.2,-1.2) {G};
+    
+    \path[onslide={<1, 3>{highlightorange}}, onslide={<5>{transparentblue}}] (A) edge (B);
+    \path[onslide={<1, 2, 3>{highlightorange}}] (A) edge (D);
+    \path[onslide={<1, 2>{highlightorange}}] (D) edge (E);
+    \path[onslide={<1>{highlightorange}}] (C) edge (F);
+    \path[onslide={<1, 3>{highlightorange}}] (C) edge (A);
+    \path[onslide={<1, 2>{highlightorange}}] (E) edge (G); 
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Suchb\"aume}
+\begin{definition}
+Ein gewurzelter Baum $T = (V, E, r)$ hei{\ss}t \alert{geordnet}, falls f\"ur alle $v \in V$ die Menge $N^+(v)$ strikt geordnet ist.
+\end{definition}
+
+\begin{block}{Vereinbarungen}
+\begin{itemize}
+    \item Im Folgenden meint "Bin\"arbaum" stets einen \emph{geordneten} Bin\"arbaum.
+    \item F\"ur einen inneren Knoten $v$ bezeichnen $v_{\ell}$ und $v_r$ sein "linkes" bzw. "rechtes" Kind, d.h. $v_{\ell} < v_r$.
+\end{itemize}
+\end{block}
+
+\begin{definition}[Bin\"arer Suchbaum]
+Sei $T = (V, E, r)$ ein Bin\"arbaum mit injektiver \alert{Beschriftungsfunktion} $\lambda : V \to \nat$.
+Wir nennen $T$ einen \alert{bin\"aren Suchbaum}, falls f\"ur alle Knoten $v \in V$ mit Kindern $v_{\ell}$ und $v_r$ gilt, dass $\lambda(v_{\ell}) < \lambda(v) < \lambda(v_r)$.
+\end{definition}
+\end{frame}
+
+\begin{frame}{AVL-B\"aume}
+\begin{definition}<+->
+Sei $T = (V, E, r)$ ein bin\"arer Suchbaum.
+F\"ur Knoten $v \in V$ mit Kindern $v_{\ell}, v_r$ seien $d_{\ell} \coloneqq d(T_{v_{\ell}})$ und $d_r \coloneqq d(T_{v_r})$ die H\"ohen des linken und rechten Teilbaumes von $v$.
+
+Die \alert{Balance} von $v$ definieren wir durch $bal(v) \coloneqq \abs{d_{\ell} - d_r}$
+\end{definition}
+
+\begin{definition}<+->[AVL-Baum]
+Ein AVL-Baum $T = (V, E, r)$ ist ein bin\"arer Suchbaum, in dem für alle $v \in V$ gilt, dass $bal(v) \leq 1$, d.h. die H\"ohen des linken und rechten Teilbaumes von $v$ unterscheiden sich um h\"ochstens eins.
+
+Diese Eigenschaft nennt man \alert{höhenbalanciert}.
+\end{definition}
+
+\begin{alertblock}{Achtung}<+->
+Das bedeutet \emph{nicht}, dass sich die Tiefen aller Bl\"atter um h\"ochsten eins unterscheiden.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Eigenschaften von AVL-B\"aumen}
+\begin{theorem}
+F\"ur alle AVL-B\"aume $T = (V, E, r)$ mit $n \coloneqq \abs{V}$ Knoten ist $d(T) \in \bigO(\log n)$.
+\end{theorem}
+\begin{proof}
+Siehe Vorlesung!
+\end{proof}
+\end{frame}
+
+\begin{frame}{Operationen auf AVL-B\"aumen}
+\only<+->{
+    Wie f\"ur Suchb\"aume \"ublich, wollen wir mindestens die folgenden Operationen unterst\"utzen:
+    \begin{itemize}
+        \item Suchen
+        \item Einf\"ugen
+        \item L\"oschen
+    \end{itemize}
+}
+
+\only<+->{Im Unterschied zu nat\"urlichen Suchb\"aumen m\"ussen wir hier darauf achten, die H\"ohenbalance zu wahren.}
+\begin{itemize}
+    \item<+-> Da eine \emph{Suche} nichts an der Form des Baumes \"andert, muss diese auch nicht angepasst werden.
+    \item<+-> Anders sieht es beim \emph{Einf\"ugen} und \emph{L\"oschen} aus: Hier gehen wir zun\"achst wie gewohnt vor und stellen die Balance anschlie{\ss}end durch \alert{Rotationen} wieder her.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Schreibtischtests zu AVL-B\"aumen}
+F\"ur Schreibtischtests zu den eben genannten Operationen auf AVL-B\"aumen sei auf die \alert{\href{https://www2.informatik.hu-berlin.de/~mjung/Tutorium/AlgoDat2016/folien10.pdf}{Folien von Michael R. Jung}} aus dem Jahr 2016 verwiesen.
+\end{frame}
+
+\begin{frame}[plain, c]
+\begin{center}
+\Huge{ENDE}
+\end{center}
+\end{frame}
