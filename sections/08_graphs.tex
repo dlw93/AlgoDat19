@@ -1,4 +1,4 @@
-\section{B\"aume}
+\section{Graphen \& B\"aume}
 
 \begin{frame}<1-4>[label=graph]
 \frametitle<1-4>{Graphen}
@@ -53,6 +53,153 @@ Ein Graph ist \alert{zusammenh\"angend}, falls f\"ur alle $(v, w) \in V \times V
 \pause
 \end{frame}
 
+\begin{frame}{Repr\"asentation von Graphen}
+\begin{definition}
+Sei $G = (V, E)$ ein Graph.
+F\"ur alle Knoten $v \in V$ nennen wir $N(v) \coloneqq \{ w \in V : \{v, w\} \in E \}$ die \alert{Nachbarschaft} von $v$.
+\end{definition}
+
+\begin{block}{Adjazenzmatrix}
+Wir k\"onnen einen Graphen $G = (V, E)$ mit $n \coloneqq \abs{V}$ und o.B.d.A. mit $V = \{ 1, \dots, n \}$ durch eine \alert{Adjazenzmatrix} $M_G = (m_{i,j})_{1 \leq i < j \leq n}$ mit $m_{i, j} = 1 \iff \{ i, j \} \in E$ darstellen.
+\end{block}
+
+\begin{block}{Adjazenzlisten}
+Alternativ k\"onnen wir $G$ auch durch Folge von \alert{Adjazenzlisten} $N_1, \dots, N_n$ mit $N_i = N(i)$ f\"ur $1 \leq i \leq n$ darstellen, d.h. die $i$-te Liste enth\"alt genau die Nachbarn von $i$.
+\end{block}
+\end{frame}
+
+\begin{frame}{Vergleich von Adjazenzmatrix und Adjazenzlisten}
+Der Vorteil von Adjazenzmatrizen gegen\"uber Adjazenzlisten ist, dass f\"ur zwei Knoten $v, w \in V$ in Zeit $\bigO(1)$ \"uberpr\"uft werden kann, ob $\{ v, w \} \in E$ ist --- f\"ur Adjazenzlisten ist dieser Test in $\bigO(n)$ bzw. $\bigO(\log n)$ falls die Listen sortiert sind.
+
+Andererseits haben Adjazenzlisten den Vorteil, die Nachbarschaft eines Knotens $v$ in Zeit $\bigO(\abs{N(v)})$ iterieren zu k\"onnen, w\"ahrend dies f\"ur Adjazenzmatrizen in $\bigO(n)$ ist.
+
+Allgemein gilt, dass sich die Vorteile der Adjazenzliste verlieren, je \alert{dichter} der Graph ist, d.h. je mehr Kanten er im Verh\"altnis zu seiner Knotenanzahl hat.
+\begin{itemize}
+    \item Beispielsweise gilt f\"ur den \alert{vollst\"andigen Graphen} $K_n = (V, E)$ mit $\abs{V} = n$ und $E = \{ \{ v, w \} : v, w \in V \}$, d.h. $m = \frac{n \cdot (n-1)}{2}$, dass $\abs{N(v)} = n - 1$, sodass auch die Adjazenzmatrix eine Iteration der Nachbarn in Zeit $\bigO(\abs{N(v)})$ erlaubt.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Breitensuche \, I}
+\begin{columns}[T]
+\begin{column}<1->{0.45\textwidth}
+\vspace*{-5pt}
+\begin{algorithm}[H]
+	\caption{Breitensuche (BFS)}
+	\label{trees:alg:bfs}
+	\vspace*{-6pt}
+	\SetKwFunction{Enqueue}{enqueue}
+	\SetKwFunction{Dequeue}{dequeue}
+	\SetKwFunction{Visit}{visit}
+	\DontPrintSemicolon
+	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
+    $visited \gets \emptyset$\;
+    $frontier \gets \{ p \}$\;
+    \While{$frontier \neq \emptyset$}{
+        $v \gets $ \Dequeue{$frontier$}\;
+        \If{$v \not \in visited$}{
+            \Visit{$v$}\;
+            $visited \gets visited \cup \{ v \}$\;
+            \ForEach{$w \in N(v)$}{
+                \Enqueue{$frontier$, $w$}\;
+            }
+        }
+    }
+\end{algorithm}
+\end{column}
+\begin{column}<2->{0.5\textwidth}
+Breitensuche ist eine grundlegende Strategie zum systematischen Durchlaufen eines Graphen.
+
+\medskip
+
+In \emph{visited} merken wir uns bereits besuchte Knoten, w\"ahrend \emph{frontier} eine \alert{Queue} \emph{eventuell} noch zu besuchender Knoten ist.
+
+\medskip
+
+Sobald wir einen Knoten $v$ aus \emph{frontier} entfernen, pr\"ufen wir zun\"achst, ob er bereits besucht wurde.
+Falls nicht, f\"uhren wir eine nutzerdefinierte Funktion \texttt{visit} (bspw. \texttt{print}) aus und markieren $v$ als besucht.
+Abschlie{\ss}end f\"ugen wir alle Nachbarn von $v$ zu \emph{frontier} hinzu.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Breitensuche \, II}
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\vspace*{-5pt}
+\addtocounter{algocf}{-1}
+\begin{algorithm}[H]
+	\caption{Breitensuche (BFS)}
+	\SetKwFunction{Enqueue}{enqueue}
+	\SetKwFunction{Dequeue}{dequeue}
+	\SetKwFunction{Visit}{visit}
+	\DontPrintSemicolon
+	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
+    $visited \gets \emptyset$\;
+    $frontier \gets \{ p \}$\;
+    \While{$frontier \neq \emptyset$}{
+        $v \gets $ \Dequeue{$frontier$}\;
+        \If{$v \not \in visited$}{
+            \Visit{$v$}\;
+            $visited \gets visited \cup \{ v \}$\;
+            \ForEach{$w \in N(v)$}{
+                \Enqueue{$frontier$, $w$}\;
+            }
+        }
+    }
+\end{algorithm}
+\end{column}
+\begin{column}{0.5\textwidth}
+Hinsichtlich der Laufzeit betrachten wir hier nur \emph{zusammenh\"angende} Graphen $G = (V, E)$ mit $n \coloneqq \abs{V}$ und $m \coloneqq \abs{E}$.
+F\"ur diese gilt $n \leq m + 1$.
+
+\medskip
+
+Weiterhin nehmen wir an, dass \texttt{visit} in $\bigO(1)$ liegt und dass $G$ durch Adjazenzlisten repr\"asentiert ist, sodass $N(v)$ in $\bigO(1)$ ist.
+
+\medskip
+
+Dann ist klar, dass \algref{trees:alg:bfs} in Zeit $\bigO(m)$ ist, da alle $n < m$ Knoten und $m$ Kanten h\"ochstens zwei mal betrachtet werden (hier ohne Beweis).
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Tiefensuche}
+\begin{columns}[T]
+\begin{column}<1->{0.45\textwidth}
+\vspace*{-5pt}
+\begin{algorithm}[H]
+	\caption{Tiefensuche (DFS)}
+	\label{trees:alg:dfs}
+	\vspace*{-6pt}
+	\SetKwFunction{Push}{\emphred<2>{push}}
+	\SetKwFunction{Pop}{\emphred<2>{pop}}
+	\SetKwFunction{Visit}{visit}
+	\DontPrintSemicolon
+	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
+    $visited \gets \emptyset$\;
+    $frontier \gets \{ p \}$\;
+    \While{$frontier \neq \emptyset$}{
+        $v \gets $ \Pop{$frontier$}\;
+        \If{$v \not \in visited$}{
+            \Visit{$v$}\;
+            $visited \gets visited \cup \{ v \}$\;
+            \ForEach{$w \in N(v)$}{
+                \Push{$frontier$, $w$}\;
+            }
+        }
+    }
+\end{algorithm}
+\end{column}
+\begin{column}<2->{0.5\textwidth}
+Einziger Unterschied zu \algref{trees:alg:bfs} ist die Verwendung eines \emphred{Stacks} anstelle einer Queue.
+
+\medskip
+
+Entsprechend behalten auch die Aussagen bzgl. der Laufzeit ihre G\"ultigkeit.
+\end{column}
+\end{columns}
+\end{frame}
+
 \begin{frame}<1-3>[label=diameter]
 \frametitle<1-3>{Der Durchmesser eines Graphen}
 \frametitle<4>{Zur Erinnerung: Der Durchmesser eines Graphen}
@@ -101,59 +248,6 @@ Im Allgemeinen liegt die Laufzeit der Berechnung des Durchmessers einen Graphen 
 \end{column}
 \end{columns}
 \pause
-\end{frame}
-
-\begin{frame}{Graph Traversierung}
-In der Vorlesung wurden folgende Traversierungsstrategien vorgestellt:
-
-\begin{columns}[T]
-\begin{column}<1->{0.45\textwidth}
-\begin{algorithm}[H]
-	\caption{Breitensuche (BFS)}
-	\label{trees:alg:bfs}
-	\SetKwFunction{Enqueue}{\emphred<3>{enqueue}}
-	\SetKwFunction{Dequeue}{\emphred<3>{dequeue}}
-	\SetKwFunction{Visit}{visit}
-	\DontPrintSemicolon
-	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
-    $visited \gets \emptyset$\;
-    $frontier \gets \{ p \}$\;
-    \While{$frontier \neq \emptyset$}{
-        $v \gets $ \Dequeue{$frontier$}\;
-        \If{$v \not \in visited$}{
-            \Visit{$v$}\;
-            $visited \gets visited \cup \{ v \}$\;
-            \ForEach{$\{ v, w \} \in E$}{
-                \Enqueue{$frontier$, $w$}\;
-            }
-        }
-    }
-\end{algorithm}
-\end{column}
-\begin{column}<2->{0.45\textwidth}
-\begin{algorithm}[H]
-	\caption{Tiefensuche (DFS)}
-	\label{trees:alg:dfs}
-	\SetKwFunction{Push}{\emphred<3>{push}}
-	\SetKwFunction{Pop}{\emphred<3>{pop}}
-	\SetKwFunction{Visit}{visit}
-	\DontPrintSemicolon
-	\Input{Graph $G = (V, E)$, Pivot $p \in V$}
-    $visited \gets \emptyset$\;
-    $frontier \gets \{ p \}$\;
-    \While{$frontier \neq \emptyset$}{
-        $v \gets $ \Pop{$frontier$}\;
-        \If{$v \not \in visited$}{
-            \Visit{$v$}\;
-            $visited \gets visited \cup \{ v \}$\;
-            \ForEach{$\{ v, w \} \in E$}{
-                \Push{$frontier$, $w$}\;
-            }
-        }
-    }
-\end{algorithm}
-\end{column}
-\end{columns}
 \end{frame}
 
 \againframe<5>{graph}
@@ -283,7 +377,7 @@ Aufgrund der Kreisfreiheit von $T$ muss \emph{der} Pfad von $t$ nach $u$ eindeut
 \begin{frame}{Beweis von \thmref{trees:thm:diameter}}
 \begin{block}<+->{Laufzeit}
 Die Laufzeit von Algorithmus \ref{trees:alg:diameter} ist klar, da zum einen f\"ur alle B\"aume $T = (V, E)$ mit $n \coloneqq \abs{V}$ und $m \coloneqq \abs{E}$ gilt, dass $m = n - 1$ ist.
-Zudem wissen wir, dass Breitensuche im Allgemeinen in $\bigO(m)$ liegt --- f\"ur B\"aume also sogar in $\bigO(n)$.
+Zudem wissen wir, dass Breitensuche f\"ur alle zusammenh\"angenden Graphen in $\bigO(m)$ liegt --- f\"ur B\"aume also sogar in $\bigO(n)$.
 \end{block}
 
 \begin{block}<+->{Korrektheit}
@@ -472,10 +566,4 @@ Siehe Vorlesung!
 
 \begin{frame}{Schreibtischtests zu AVL-B\"aumen}
 F\"ur Schreibtischtests zu den eben genannten Operationen auf AVL-B\"aumen sei auf die \alert{\href{https://www2.informatik.hu-berlin.de/~mjung/Tutorium/AlgoDat2016/folien10.pdf}{Folien von Michael R. Jung}} aus dem Jahr 2016 verwiesen.
-\end{frame}
-
-\begin{frame}[plain, c]
-\begin{center}
-\Huge{ENDE}
-\end{center}
 \end{frame}
