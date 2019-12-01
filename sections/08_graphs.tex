@@ -69,7 +69,7 @@ Alternativ k\"onnen wir $G$ auch durch Folge von \alert{Adjazenzlisten} $N_1, \d
 \end{frame}
 
 \begin{frame}{Vergleich von Adjazenzmatrix und Adjazenzlisten}
-Der Vorteil von Adjazenzmatrizen gegen\"uber Adjazenzlisten ist, dass f\"ur zwei Knoten $v, w \in V$ in Zeit $\bigO(1)$ \"uberpr\"uft werden kann, ob $\{ v, w \} \in E$ ist --- f\"ur Adjazenzlisten ist dieser Test in $\bigO(n)$ bzw. $\bigO(\log n)$ falls die Listen sortiert sind.
+Der Vorteil von Adjazenzmatrizen gegen\"uber Adjazenzlisten ist, dass f\"ur je zwei Knoten $v, w \in V$ in Zeit $\bigO(1)$ \"uberpr\"uft werden kann, ob $\{ v, w \} \in E$ ist --- f\"ur Adjazenzlisten ist dieser Test in $\bigO(n)$ bzw. $\bigO(\log n)$ falls die Listen sortiert sind.
 
 Andererseits haben Adjazenzlisten den Vorteil, die Nachbarschaft eines Knotens $v$ in Zeit $\bigO(\abs{N(v)})$ iterieren zu k\"onnen, w\"ahrend dies f\"ur Adjazenzmatrizen in $\bigO(n)$ ist.
 

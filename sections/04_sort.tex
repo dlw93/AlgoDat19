@@ -329,26 +329,6 @@ Ordnen Sie folgende Liste mittels des nebenstehenden Algorithmus: $$L = \alglist
 \end{columns}
 \end{frame}
 
-% \begin{frame}{Problemreduktion}
-% Problemreduktionen sind ein in der theoretischen Informatik h\"aufig genutztes Werkzeug, um per \alert{Widerspruch} zu zeigen, dass ein Problem \emph{nicht} in einer bestimmten Komplexit\"atsklasse liegt.
-
-% \begin{block}{Grundidee}<2->
-% Sei $a$ eine Eingabe f\"ur ein Problem $\mathcal{A}$ und analog $b$ eine Eingabe f\"ur ein Problem $\mathcal{B}$.
-
-% Wenn wir 
-% \begin{enumerate}
-%     \item einen Algorithmus $\mathbb{B}$ haben, der eine Eingabe $b$ f\"ur $\mathcal{B}$ verarbeiten kann (kurz: $\mathbb{B}(b)$ \emph{und} 
-%     \item einen Algorithmus $\mathbb{T}$, der eine Eingabe $a$ f\"ur $\mathcal{A}$ in eine Eingabe f\"ur $\mathcal{B}$ \alert{transformieren} kann,
-% \end{enumerate}
-% dann k\"onnen wir $b \coloneqq \mathbb{F}(a)$ als Eingabe f\"ur $\mathbb{B}$ nutzen und so 
-
-% \end{block}
-
-% \begin{example}<3->
-% Siehe Tafel!
-% \end{example}
-% \end{frame}
-
 \begin{frame}{Bemerkung zur Laufzeit}
 In der Vorlesung wurde folgendes Theorem bewiesen:
 
@@ -380,38 +360,6 @@ Hierbei stellen wir uns die Frage, inwiefern sich diese Eigenschaften ggf. zur R
 Die einzelnen Datenwerte d\"urfen wir aber nach wie vor \emphred{nur miteinander vergleichen}!
 \end{alertblock}
 \end{frame}
-
-% \begin{frame}{Entscheidungsprobleme}
-% \begin{definition}[Entscheidungsproblem]
-% Sei $U$ eine Menge und sei $A \subseteq U$.
-% Das Problem, für ein $x \in U$ zu \emph{entscheiden}, ob auch $x \in A$ ist, wird das \alert{Entscheidungsproblem} für $A$ genannt.
-
-% Ein Algorithmus $\mathbb{A}: U \to \{ 0, 1 \}$ \alert{entscheidet} $A$, falls $\mathbb{A}(x) = 1 \iff x \in A$.
-
-% Das Entscheidungsproblem f\"ur $A$ liegt in $\bigO(g)$ für eine Funktion $g$, falls ein Algorithmus existiert, der $A$ in Zeit $\bigO(g)$ entscheidet.
-% \end{definition}
-
-% \begin{example}<2->
-% Sei $U = \nat$ die Menge \emph{aller} nat\"urlichen Zahlen und sei $A = \{ 2 \, x : x \in U \}$ die Menge der \emph{geraden} nat\"urlichen Zahlen.
-% Die Frage, ob eine beliebige nat\"urliche Zahl $x \in U$ auch gerade ist (also ob $x \in A$), kann algorithmisch leicht in Zeit $\bigO(1)$ entschieden werden, indem wir $\ceil{\nicefrac{x}{2}} \cdot 2 \overset{?}{=} x$ auswerten und ggf. $1$ bzw. $0$ ausgeben.
-% \end{example}
-
-% \end{frame}
-
-% \begin{frame}{Problemreduktion}
-% Seien $A \subseteq U_1$ und $B \subseteq U_2$ und sei $A$ \emph{nicht} in $\bigO(g)$ entscheidbar.
-% Wir wollen zeigen, dass $B$ \emph{ebenfalls nicht} in $\bigO(g)$ entschieden werden kann.
-
-% Zwecks Erzeugung eines \alert{Widerspruchs} nehmen wir an, wir h\"atten einen Algorithmus $\mathbb{B}$, der $B$ in $\bigO(g)$ entscheidet.
-
-% Wenn wir \emph{zeigen} können, dass wir jedes $a \in U_1$ mittels eines Algorithmus $\mathbb{T}$ in Zeit $\bigO(g)$ in ein $\mathbb{T}(a) \in U_2$ \alert{transformieren} können, sodass $a \in A \iff \mathbb{T}(a) \in B$, dann entscheidet folgender Algorithmus $A$ in Zeit $\bigO(g)$:
-% \begin{align*}
-%     &b \gets \mathbb{T}(a) \\
-%     &\mathbf{return} \  \mathbb{B}(b)
-% \end{align*}
-
-% Das steht aber im Widerspruch dazu, dass $A$ \emph{nicht} in Zeit $\bigO(g)$ entschieden werden \emph{kann}.
-% \end{frame}
 
 \begin{frame}{Aufgaben zum Sortieren spezieller Arrays I}
 \begin{task}
