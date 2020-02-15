@@ -1,7 +1,5 @@
 # Algorithms und Data Structures
 
-## Overview
-
 I created these slides for the tutorial on *Algorithms and Data Structures*, accompanying the lecture given by [Prof. Dr. Ulf Leser](https://www2.informatik.hu-berlin.de/~leser) at [Humboldt University of Berlin](https://www.hu-berlin.de) during the summer term of 2019.
 
 The slides are written in German as that was/is a common practice for this tutorial, although I'm considering to translate them to English in the near future (feel free to help me and send a PR).
